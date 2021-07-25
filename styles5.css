@@ -5,7 +5,6 @@ header {
   padding: 2%;
   font-size: 30px;
   border-bottom: 1px solid black;
-
 }
 
 .krypt {
@@ -25,6 +24,13 @@ header {
   position: relative;
   margin-top: 5px;
   /* top: 20px */
+  left: 20%;
+}
+
+#progressbar {
+  position: absolute;
+  width: 220%; 
+  /* min-width: 400px; */
   left: 20%;
 }
 
@@ -71,6 +77,15 @@ header {
     left: 20%;
     margin-top: 5px;
 }
+
+#progressbar {
+  position: absolute;
+  top: 300px;
+  width: 60%; 
+  min-width: 400px;
+  left: 20%;
+}
+
 
 body {
   font-family: Arial, Helvetica, sans-serif;

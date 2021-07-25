@@ -1,8 +1,9 @@
 // modal and toggle with functions i know
 // to seperate into small functions
 // locate "more" button relative to div a-la project1
-// style the more onmodal
+// style the more on modal
 // use jquery-ajax
+// "show less" after clicking show more
 
 $(function () {
     // localStorage.clear();
@@ -74,6 +75,7 @@ $(function () {
         for (coin of dataList) {
             if (coin.symbol.length === 3) {
                 createCoin(coin, "#containerDiv");
+                $("#progressbar").hide();
             }
         }                        
     }
@@ -106,8 +108,11 @@ $(function () {
         const content = more.nextElementSibling; // to rewrite with the functions that i know
         if (content.style.display === "block") {
             content.style.display = "none";
+            $(`button[id=${more.id}]`).text("More Info");
         } else {
+            // $("#progressbar").css({"position" : "absolute", "top" : "90px", "width" : "5px", "left" : "550px"}).show();
             content.style.display = "block";
+            $(`button[id=${more.id}]`).text("Less Info");
             const coinString = sessionStorage.getItem(`${more.name}`);  
             if (coinString === null) {
                 console.log(more.name + " is not on session storage")
@@ -124,7 +129,8 @@ $(function () {
                     Current exchange rate: ${coinObj.usd}$,
                     ${coinObj.eur}€,
                     ${coinObj.ils}₪`);                
-                console.log("got it from session storages")
+                console.log("got it from session storages");
+                // $("#progressbar").hide();
             }
         }
     }
@@ -164,6 +170,7 @@ $(function () {
             Current exchange rate: ${coin.market_data.current_price.usd}$,
             ${coin.market_data.current_price.eur}&euro;,
             ${coin.market_data.current_price.ils}&#8362;`);
+        // $("#progressbar").hide();
     }
 
     function topFive(top) {
