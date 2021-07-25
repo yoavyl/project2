@@ -3,6 +3,7 @@
 // locate "more" button relative to div a-la project1
 // style the more on modal
 // use jquery-ajax
+// "show less" after clicking show more
 
 $(function () {
     // localStorage.clear();
@@ -12,9 +13,7 @@ $(function () {
     let myUserPromise = getData();
     myUserPromise = myUserPromise.then(printData);
     myUserPromise.catch(err => alert(err));
-
     var topArr = []; 
-
     $("#home").click( function () {
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
@@ -22,7 +21,6 @@ $(function () {
         $("#containerDiv").css({"left": "20%", "margin-top" : "5px"}).show();
         $(".data").show();
     });
-
     $("#live").click( function () {
         $("#live").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #about").css({"background-color" : "white", "color": "#2196F3"});
@@ -34,14 +32,12 @@ $(function () {
             myUserPromise.catch(err => alert(err));
         }
     });
-
     $("#about").click( function () {
         $("#about").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#containerDiv, #liveDiv").hide();
         $("#aboutDiv").show();
     });
-
     $("#searchButton").click(() => {
         const value = $("#searchInput").val();
         $("#liveDiv, #aboutDiv").hide();
@@ -50,7 +46,6 @@ $(function () {
         $(`#${value}`).show() // css this to put in the middle?
         $("#searchInput").val("");
     });
-
     function getData() {
         return new Promise((resolve, reject) => {
         const ajax = new XMLHttpRequest();
@@ -68,7 +63,6 @@ $(function () {
         ajax.send();
         });
     }
-
     function printData(dataList) {
         // for (let i=0 ; i<100 ; i++) {
         for (coin of dataList) {
@@ -95,22 +89,21 @@ $(function () {
             <p id="${coin.id}"></p>
         </div>
         </div>`);
-
         coinToPrint.find("input[type=checkbox]").on("click", function() {topFive(this)} );
         coinToPrint.find(".collapsible").on("click", function() {showMore(this)} );
         
         $(div).append(coinToPrint);
     }
-
     function showMore(more) {
         more.classList.toggle("active");
         const content = more.nextElementSibling; // to rewrite with the functions that i know
         if (content.style.display === "block") {
             content.style.display = "none";
-            $(`button[id=${more.id}]`).text("More Info");
+            $(`button[id=${more.id}]`).text("More Info").css("position", "relative");
         } else {
             // $("#progressbar").css({"position" : "absolute", "top" : "90px", "width" : "5px", "left" : "550px"}).show();
             content.style.display = "block";
+            // $(`button[id=${more.id}]`).text("Less Info")
             // $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
             const coinString = sessionStorage.getItem(`${more.name}`);  
             if (coinString === null) {
@@ -129,8 +122,9 @@ $(function () {
                     ${coinObj.eur}€,
                     ${coinObj.ils}₪`);                
                 console.log("got it from session storages");
+                console.log("more.id: " + more.id)
                 $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
-                // $("#progressbar").hide();
+                // here there is a problem of collapsing more info
             }
         }
     }
@@ -165,6 +159,7 @@ $(function () {
         const coinToStore = JSON.stringify(coinMoreInfo); 
         sessionStorage.setItem(`${coin.name}`, coinToStore);    
         console.log("saved " + coin.name + " to session storage");
+        console.log("coin id: " + coin.id);
         $(`p[id="${coin.id}"]`).html(
             `<img src="${coin.image.thumb}"/> 
             Current exchange rate: ${coin.market_data.current_price.usd}$,
@@ -209,20 +204,17 @@ $(function () {
             top.checked = false;
         }
     }
-
     function openModal() {
         $("#myModal").css("display","block");
         $(".close, .closeButton").click( () => {
             closeModal();
         });
     }
-
     function closeModal() {
         $("#myModal").css("display", "none");
         $(".modal-content>.data").remove();
         sessionStorage.removeItem("temporary");
     }
-
     function printToModal(name, symbol) {
         $(".modal-content").html(`
         <span class="close">&times;</span>
@@ -237,16 +229,14 @@ $(function () {
                 Cancel
             </button></footer>`);
         $('.modal-content :checkbox').prop('checked', true).attr('checked', 'checked');
-        $(".closeButton").css({"background-color" : "#2196F3", "color": "white"});
+        $(".closeButton").css({"background-color" : "#2196F3", "color": "white", "position" : "relative", "margin-top" : "5px"});
     }
-
     var modal = document.getElementById("myModal");
     window.onclick = function(event) {
         if (event.target == modal) {
             closeModal();
         }
       }
-
     function getFive() {
         let str = "";
         for (coin of topArr) {
@@ -273,7 +263,6 @@ $(function () {
             ajax.send();
         });
     }
-
     function printFive(topFiveUSD) {
         console.log(topFiveUSD);
         $("#liveDiv").empty();
@@ -282,20 +271,14 @@ $(function () {
             console.log("USD :" + topFiveUSD[coin].USD);
         }    
     }          
-
         
 });
-
-
 // 
 // 
 // 
-
 // link to live reports
 // https://canvasjs.com/jquery-charts/chart-with-multiple-axes/
-
 // window.onload = function () {
-
 // const options = {
 // 	exportEnabled: true,
 // 	animationEnabled: true,
@@ -374,7 +357,6 @@ $(function () {
 // 	}]
 // };
 // $("#liveDiv").CanvasJSChart(options);
-
 // function toggleDataSeries(e) {
 // 	if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
 // 		e.dataSeries.visible = false;
@@ -383,5 +365,4 @@ $(function () {
 // 	}
 // 	e.chart.render();
 // }
-
 // }

@@ -185,6 +185,8 @@ body {
 .collapsible {
   cursor: pointer;
   outline: none;
+  position: relative;
+  margin-bottom: 5px;
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
@@ -237,10 +239,11 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
-/* 
-#closeButton {
-  background-color: "#2196F3";
-} */
+
+/* #closeButton {
+  position: relative;
+  margin-top: 5px;
+}  */
 
 footer {
   position: relative;
