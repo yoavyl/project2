@@ -19,7 +19,7 @@ $(function () {
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#liveDiv, #aboutDiv").hide();
-        $("#containerDiv").css("left", "20%").show();
+        $("#containerDiv").css({"left": "20%", "margin-top" : "5px"}).show();
         $(".data").show();
     });
 
@@ -45,7 +45,7 @@ $(function () {
     $("#searchButton").click(() => {
         const value = $("#searchInput").val();
         $("#liveDiv, #aboutDiv").hide();
-        $("#containerDiv").css("left", "39%").show();
+        $("#containerDiv").css({"left": "39%", "margin-top" : "40px"}).show();
         $(".data").hide();
         $(`#${value}`).show() // css this to put in the middle?
         $("#searchInput").val("");
