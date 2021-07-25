@@ -3,7 +3,6 @@
 // locate "more" button relative to div a-la project1
 // style the more on modal
 // use jquery-ajax
-// "show less" after clicking show more
 
 $(function () {
     // localStorage.clear();
@@ -112,7 +111,7 @@ $(function () {
         } else {
             // $("#progressbar").css({"position" : "absolute", "top" : "90px", "width" : "5px", "left" : "550px"}).show();
             content.style.display = "block";
-            $(`button[id=${more.id}]`).text("Less Info");
+            // $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
             const coinString = sessionStorage.getItem(`${more.name}`);  
             if (coinString === null) {
                 console.log(more.name + " is not on session storage")
@@ -130,6 +129,7 @@ $(function () {
                     ${coinObj.eur}€,
                     ${coinObj.ils}₪`);                
                 console.log("got it from session storages");
+                $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
                 // $("#progressbar").hide();
             }
         }
@@ -171,6 +171,7 @@ $(function () {
             ${coin.market_data.current_price.eur}&euro;,
             ${coin.market_data.current_price.ils}&#8362;`);
         // $("#progressbar").hide();
+        $(`button[id=${coin.id}]`).text("Less Info").css("position", "static");
     }
 
     function topFive(top) {
