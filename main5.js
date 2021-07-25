@@ -166,10 +166,12 @@ $(function () {
             ${coin.market_data.current_price.ils}&#8362;`);
     }
 
-    // let coinHoldName = "";
-    // במקום להשתמש בזכרון זמני?
-
     function topFive(top) {
+        const coinToPushOrHold = {
+            symbol: top.value,
+            name: top.name,
+            id: top.id
+        }
         if (top.checked === false) {
             for (let i=0; i<topArr.length ; i++) {
                 if (topArr[i].id===top.id) {
@@ -187,23 +189,13 @@ $(function () {
             }
             closeModal();
         } else if (topArr.length<5) {
-            const coinToPush = {
-                symbol: top.value,
-                name: top.name,
-                id: top.id
-            };
-            topArr.push(coinToPush);
+            topArr.push(coinToPushOrHold);
             console.log("topArr: " + topArr);
             $(`#containerDiv input[id=${top.id}]`).prop('checked', true).attr('checked', 'checked');
         } else {
-            const coinToHold = {
-                symbol: top.value,
-                name: top.name,
-                id: top.id
-            };
-            // יש כפילות ביצירת המטבעות ואפשר לקצר, לשים את שניהם בסקופ עליון
-            const coinOnHold = JSON.stringify(coinToHold); 
+            const coinOnHold = JSON.stringify(coinToPushOrHold); 
             sessionStorage.setItem("temporary", coinOnHold); 
+            // need to find a way not to use memory
             printToModal(top.name, top.value);
             openModal();
             top.checked = false;
