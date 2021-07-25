@@ -1,7 +1,6 @@
 // modal and toggle with functions i know
 // to seperate into small functions
 // locate "more" button relative to div a-la project1
-// style the more onmodal
 // use jquery-ajax
 
 $(function () {
@@ -19,7 +18,7 @@ $(function () {
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#liveDiv, #aboutDiv").hide();
-        $("#containerDiv").css("left", "20%").show();
+        $("#containerDiv").show();
         $(".data").show();
     });
 
@@ -45,9 +44,9 @@ $(function () {
     $("#searchButton").click(() => {
         const value = $("#searchInput").val();
         $("#liveDiv, #aboutDiv").hide();
-        $("#containerDiv").css("left", "39%").show();
+        $("#containerDiv").show();
         $(".data").hide();
-        $(`#${value}`).show() // css this to put in the middle?
+        $(`#${value}`).show();
         $("#searchInput").val("");
     });
 
@@ -75,136 +74,55 @@ $(function () {
             if (coin.symbol.length === 3) {
                 createCoin(coin, "#containerDiv");
             }
-        }                        
+        }
+                        
     }
     
+    // change the symbol/id mix-up
     function createCoin(coin, div) {
         const coinToPrint = $(`<div class="data" id="${coin.symbol}">
         <label class="switch">
-            <input id="${coin.id}" name="${coin.name}" value="${coin.symbol}" type="checkbox">
+            <input id="${coin.symbol}" name="${coin.name}" idd="${coin.id}" type="checkbox">
             <span class="slider round"></span>
         </label>
         <h3>${coin.symbol}</h3>
         <p>${coin.name}</p>
-        <button id="${coin.id}" class="collapsible ui-button ui-widget ui-corner-all" style="background-color:#2196F3;color:white"
-            name="${coin.name}" value="${coin.symbol}">
+        <button id="collapsible" class="ui-button ui-widget ui-corner-all" style="background-color:#2196F3;color:white"
+            name="${coin.id}">
             More Info
         </button>
         <div class="content">
-            <p id="${coin.id}"></p>
+            <p id="${coin.symbol}"></p>
         </div>
         </div>`);
 
         coinToPrint.find("input[type=checkbox]").on("click", function() {topFive(this)} );
-        coinToPrint.find(".collapsible").on("click", function() {showMore(this)} );
-        
+        coinToPrint.find("#collapsible").on("click", function() {showMore(this)} );
+
         $(div).append(coinToPrint);
     }
-
-    function showMore(more) {
-        more.classList.toggle("active");
-        const content = more.nextElementSibling; // to rewrite with the functions that i know
-        if (content.style.display === "block") {
-            content.style.display = "none";
-        } else {
-            content.style.display = "block";
-            const coinString = sessionStorage.getItem(`${more.name}`);  
-            if (coinString === null) {
-                console.log(more.name + " is not on session storage")
-                let myUserPromise = getMore(more.id);
-                myUserPromise = myUserPromise.then(printMore);
-                myUserPromise.catch(err => alert(err));
-                setTimeout ( ()=> {
-                    sessionStorage.removeItem(`${more.name}`)
-                }, 120000);
-            } else {
-                const coinObj = JSON.parse(coinString); 
-                $(`p[id="${coinObj.id}"]`).html(
-                    `<img src="${coinObj.img}"/> 
-                    Current exchange rate: ${coinObj.usd}$,
-                    ${coinObj.eur}€,
-                    ${coinObj.ils}₪`);                
-                console.log("got it from session storages")
-            }
-        }
-    }
-    
-    function getMore(id) {
-        return new Promise((resolve, reject) => {
-            const ajax = new XMLHttpRequest();
-            ajax.onreadystatechange = () => {
-                console.log(ajax.readyState);
-                if (ajax.readyState === 4) {
-                    if (ajax.status === 200) {
-                        resolve(JSON.parse(ajax.responseText));
-                    } else {
-                        reject(ajax.status + ": Error occured");
-                    }
-                }
-            };
-            console.log(id);
-            ajax.open("GET", `https://api.coingecko.com/api/v3/coins/${id}`);
-            ajax.send();
-        });
-    }
-            
-    function printMore(coin) {
-        const coinMoreInfo = {    
-            symbol: coin.symbol,
-            img: coin.image.thumb,                      
-            usd: coin.market_data.current_price.usd,
-            eur: coin.market_data.current_price.eur,
-            ils: coin.market_data.current_price.ils,
-        };
-        const coinToStore = JSON.stringify(coinMoreInfo); 
-        sessionStorage.setItem(`${coin.name}`, coinToStore);    
-        console.log("saved " + coin.name + " to session storage");
-        $(`p[id="${coin.id}"]`).html(
-            `<img src="${coin.image.thumb}"/> 
-            Current exchange rate: ${coin.market_data.current_price.usd}$,
-            ${coin.market_data.current_price.eur}&euro;,
-            ${coin.market_data.current_price.ils}&#8362;`);
-    }
-
-    // let coinHoldName = "";
-    // במקום להשתמש בזכרון זמני?
-
+ 
     function topFive(top) {
         if (top.checked === false) {
             for (let i=0; i<topArr.length ; i++) {
-                if (topArr[i].id===top.id) {
+                if (topArr[i].symbol===top.id) {
                     topArr.splice(i,1);       // deletes this-"top"-object from array
                     console.log("topArr after splice: " + topArr);
-                    $(`#containerDiv input[id=${top.id}]`).prop('checked', false).removeAttr('checked');
+                    $(`#containerDiv  input[id=${top.id}]`).prop('checked', false).removeAttr('checked');
                 }
-            }
-            const tempCoinString = sessionStorage.getItem("temporary"); 
-            if (tempCoinString !== null) {
-                const coinToAdd =JSON.parse(tempCoinString);
-                $(`#containerDiv input[id=${coinToAdd.id}]`).prop('checked', true).attr('checked', 'checked');
-                sessionStorage.removeItem("temporary");
-                topArr.push(coinToAdd);
             }
             closeModal();
         } else if (topArr.length<5) {
             const coinToPush = {
-                symbol: top.value,
+                symbol: top.id,
                 name: top.name,
-                id: top.id
-            };
+                id: top.idd
+            }
             topArr.push(coinToPush);
             console.log("topArr: " + topArr);
-            $(`#containerDiv input[id=${top.id}]`).prop('checked', true).attr('checked', 'checked');
+            $(`#containerDiv  input[id=${top.id}]`).prop('checked', true).attr('checked', 'checked');
         } else {
-            const coinToHold = {
-                symbol: top.value,
-                name: top.name,
-                id: top.id
-            };
-            // יש כפילות ביצירת המטבעות ואפשר לקצר, לשים את שניהם בסקופ עליון
-            const coinOnHold = JSON.stringify(coinToHold); 
-            sessionStorage.setItem("temporary", coinOnHold); 
-            printToModal(top.name, top.value);
+            printToModal();
             openModal();
             top.checked = false;
         }
@@ -220,24 +138,24 @@ $(function () {
     function closeModal() {
         $("#myModal").css("display", "none");
         $(".modal-content>.data").remove();
-        sessionStorage.removeItem("temporary");
     }
 
-    function printToModal(name, symbol) {
+    function printToModal() {
         $(".modal-content").html(`
         <span class="close">&times;</span>
-        <p>We are very sorry, but there is an arbitrary limit of 5 coins to save as favorites.
+        <p>You can get report of only five coins!
             <br/>
-            In order to add ${name} (${symbol}) to your favorites you have to remove one of the following: 
+            would you like to remove a coin?
         </p>`);
         for (coin of topArr) {
             createCoin(coin, ".modal-content");
         }
-        $(".modal-content").append(`<footer><button class="ui-button ui-widget ui-corner-all closeButton">
+        $(".modal-content").append(`<button class="ui-button ui-widget ui-corner-all closeButton">
                 Cancel
-            </button></footer>`);
+            </button>`);
         $('.modal-content :checkbox').prop('checked', true).attr('checked', 'checked');
         $(".closeButton").css({"background-color" : "#2196F3", "color": "white"});
+
     }
 
     var modal = document.getElementById("myModal");
@@ -283,6 +201,71 @@ $(function () {
         }    
     }          
 
+    function showMore(more) {
+        more.classList.toggle("active");
+        const content = more.nextElementSibling; // to rewrite with the functions that i know
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+            const coinString = sessionStorage.getItem(`${more.name}`);  
+            if (coinString === null) {
+                console.log(more.name + " is not on sessiobn storage")
+                let myUserPromise = getMore(more.name);
+                myUserPromise = myUserPromise.then(printMore);
+                myUserPromise.catch(err => alert(err));
+                setTimeout ( ()=> {
+                    sessionStorage.removeItem(`${more.name}`)
+                }, 120000);
+            } else {
+                const coinObj = JSON.parse(coinString); 
+                $(`p[id="${coinObj.symbol}"]`).html(
+                    `<img src="${coinObj.img}"/> 
+                    Current exchange rate: ${coinObj.usd}$,
+                    ${coinObj.eur}€,
+                    ${coinObj.ils}₪`);                
+                console.log("got it from session storages")
+            }
+        }
+    }
+    
+    function getMore(name) {
+        return new Promise((resolve, reject) => {
+            const ajax = new XMLHttpRequest();
+            ajax.onreadystatechange = () => {
+                console.log(ajax.readyState);
+                if (ajax.readyState === 4) {
+                    if (ajax.status === 200) {
+                        resolve(JSON.parse(ajax.responseText));
+                    } else {
+                        reject(ajax.status + ": Error occured");
+                    }
+                }
+            };
+            console.log(name);
+            // need to register for https://min-api.cryptocompare.com/pricing
+            ajax.open("GET", `https://api.coingecko.com/api/v3/coins/${name}`);
+            ajax.send();
+        });
+    }
+            
+    function printMore(coin) {
+        const coinMoreInfo = {    
+            symbol: coin.symbol,
+            img: coin.image.thumb,                      
+            usd: coin.market_data.current_price.usd,
+            eur: coin.market_data.current_price.eur,
+            ils: coin.market_data.current_price.ils,
+        };
+        const coinToStore = JSON.stringify(coinMoreInfo); 
+        sessionStorage.setItem(`${coin.id}`, coinToStore);    
+        console.log("saved " + coin.id + " to session storage");
+        $(`p[id="${coin.symbol}"]`).html(
+            `<img src="${coin.image.thumb}"/> 
+            Current exchange rate: ${coin.market_data.current_price.usd}$,
+            ${coin.market_data.current_price.eur}€,
+            ${coin.market_data.current_price.ils}₪`);
+    }
         
 });
 
