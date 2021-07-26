@@ -56,9 +56,8 @@ $(function () {
         $("#containerDiv, #aboutDiv").hide();
         $("#liveDiv").show();
         if (topArr.length !==0) {
-            let myUserPromise = getFive();
-            myUserPromise = myUserPromise.then(printFive);
-            myUserPromise.catch(err => alert(err));
+            getFive();
+        } else { // modal/text with "no favorites"
         }
     });
     $("#about").click( function () {
@@ -107,6 +106,7 @@ $(function () {
         
         $(div).append(coinToPrint);
     }
+
     function showMore(more) {
         more.classList.toggle("active");
         const content = more.nextElementSibling; // to rewrite with the functions that i know
@@ -238,7 +238,8 @@ $(function () {
             closeModal();
         }
       }
-    function getFive() {
+
+      async function getFive() {
         let str = "";
         for (coin of topArr) {
             str+=`${coin.symbol},`;
@@ -246,24 +247,16 @@ $(function () {
         console.log("str: " + str);
         // use reduce?
         const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${str}&tsyms=USD`;
-        console.log(url);
-        return new Promise((resolve, reject) => {
-            const ajax = new XMLHttpRequest();
-            ajax.onreadystatechange = () => {
-                console.log(ajax.readyState);
-                if (ajax.readyState === 4) {
-                    if (ajax.status === 200) {
-                        resolve(JSON.parse(ajax.responseText));
-                    } else {
-                        reject(ajax.status + ": Error occured");
-                    }
-                    }
-            };
-            // need to register for https://min-api.cryptocompare.com/pricing
-            ajax.open("GET", url);
-            ajax.send();
-        });
+        try {
+            const coin = await getDataAsync(url);
+            console.log("got data")
+            printFive(coin);
+        }
+        catch (err) {
+            alert("Error: " + err.status);
+        }
     }
+
     function printFive(topFiveUSD) {
         console.log(topFiveUSD);
         $("#liveDiv").empty();
