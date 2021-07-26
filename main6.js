@@ -162,7 +162,7 @@ $(function () {
         console.log("saved " + coin.name + " to session storage");
         console.log("coin id: " + coin.id);
         $(`p[id="${coin.id}"]`).html(
-            `<img src="${coin.image.thumb}"/> 
+            `<img src="${coin.image.thumb}"/><br/> 
             Current exchange rate: ${coin.market_data.current_price.usd}$,
             ${coin.market_data.current_price.eur}&euro;,
             ${coin.market_data.current_price.ils}&#8362;`);
