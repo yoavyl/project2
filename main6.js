@@ -42,11 +42,13 @@ $(function () {
         });
     }
 
+    let topArrMap = [{symbol: "xxx"},{symbol: "xxx"},{symbol: "xxx"},{symbol: "xxx"},{symbol: "xxx"}];
     var topArr = []; 
     $("#home").click( function () {
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#liveDiv, #aboutDiv").hide();
+        $("#liveDov").empty();
         $("#containerDiv").css({"left": "20%", "margin-top" : "5px"}).show();
         $(".data").show();
     });
@@ -65,6 +67,7 @@ $(function () {
         $("#about").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#containerDiv, #liveDiv").hide();
+        $("#liveDov").empty();
         $("#aboutDiv").show();
     });
     $("#searchButton").click(() => {
@@ -72,6 +75,8 @@ $(function () {
         $("#liveDiv, #aboutDiv").hide();
         $("#containerDiv").css({"left": "39%", "margin-top" : "40px"}).show();
         $(".data").hide();
+        $("#liveDov").empty();
+        topArrMap = [];
         $(`#${value}`).show() // css this to put in the middle?
         $("#searchInput").val("");
     });
@@ -272,9 +277,12 @@ $(function () {
 
     // API here:
     // https://canvasjs.com/jquery-charts/dynamic-live-multi-series-chart/
+    // MUST SPLICE TOPARRMAP BACK WHEN WE LEAVE LIVE REPORT
 
     function drawChart() {
-        let topArrMap= topArr;
+        for (i=0; i<topArr.length; i++) {
+            topArrMap[i].symbol = topArr[i].symbol;
+        }
         let x = {symbol: "xxx"};
         switch (topArr.length) {
             case 1: visibilityGraph = [{visibility: true, showInLegend: true},
@@ -341,7 +349,7 @@ $(function () {
                 yValueFormatString: "###.00Wh",
                 xValueFormatString: "hh:mm:ss TT",
                 showInLegend: true,
-                name: `${topArr[0].symbol}`,
+                name: `${topArrMap[0].symbol}`,
                 dataPoints: dataPoints1,
                 visible: visibilityGraph[0].visibility,
                 showInLegend: visibilityGraph[0].showInLegend
@@ -351,7 +359,7 @@ $(function () {
                 xValueType: "dateTime",
                 yValueFormatString: "###.00Wh",
                 showInLegend: true,
-                name: `${topArr[1].symbol}`,
+                name: `${topArrMap[1].symbol}`,
                 dataPoints: dataPoints2,
                 visible: visibilityGraph[1].visibility,
                 showInLegend: visibilityGraph[1].showInLegend
@@ -360,7 +368,7 @@ $(function () {
                 xValueType: "dateTime",
                 yValueFormatString: "###.00Wh",
                 showInLegend: true,
-                name: `${topArr[2].symbol}`,
+                name: `${topArrMap[2].symbol}`,
                 dataPoints: dataPoints3,
                 visible: visibilityGraph[2].visibility,
                 showInLegend: visibilityGraph[2].showInLegend
@@ -370,7 +378,7 @@ $(function () {
                 xValueType: "dateTime",
                 yValueFormatString: "###.00Wh",
                 showInLegend: true,
-                name: `${topArr[3].symbol}`,
+                name: `${topArrMap[3].symbol}`,
                 dataPoints: dataPoints4,
                 visible: visibilityGraph[3].visibility,
                 showInLegend: visibilityGraph[3].showInLegend
@@ -380,7 +388,7 @@ $(function () {
                 xValueType: "dateTime",
                 yValueFormatString: "###.00Wh",
                 showInLegend: true,
-                name: `${topArr[4].symbol}`,
+                name: `${topArrMap[4].symbol}`,
                 dataPoints: dataPoints5,
                 visible: visibilityGraph[4].visibility,
                 showInLegend: visibilityGraph[4].showInLegend
@@ -459,11 +467,11 @@ $(function () {
             }
         
             // updating legend text with  updated with y Value 
-            options.data[0].legendText = `${topArr[0].symbol} : ${yValue1} USD`;
-            options.data[1].legendText = `${topArr[1].symbol} : ${yValue2} USD`;
-            options.data[2].legendText = `${topArr[2].symbol} : ${yValue3} USD`;
-            options.data[3].legendText = `${topArr[3].symbol} : ${yValue4} USD`;
-            options.data[4].legendText = `${topArr[4].symbol} : ${yValue5} USD`;
+            options.data[0].legendText = `${topArrMap[0].symbol} : ${yValue1} USD`;
+            options.data[1].legendText = `${topArrMap[1].symbol} : ${yValue2} USD`;
+            options.data[2].legendText = `${topArrMap[2].symbol} : ${yValue3} USD`;
+            options.data[3].legendText = `${topArrMap[3].symbol} : ${yValue4} USD`;
+            options.data[4].legendText = `${topArrMap[4].symbol} : ${yValue5} USD`;
             $("#liveDiv").CanvasJSChart().render();
         }
         // generates first set of dataPoints 
