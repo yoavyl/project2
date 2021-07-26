@@ -268,10 +268,47 @@ $(function () {
         drawChart();
     }
     
+    let visibilityGraph =[]
+
     // API here:
     // https://canvasjs.com/jquery-charts/dynamic-live-multi-series-chart/
 
     function drawChart() {
+
+        let x = {symbol: "xxc"};
+
+        switch (topArr.length) {
+            case 1: visibilityGraph = [{visibility: true, text: "`${topArr[0].symbol} : ${yValue1} USD`"},
+             {visibility: false, text: ""}, {visibility: false, text: ""}, {visibility: false, text: ""},
+            {visibility:false, text: ""}]; 
+            for (i=1; i<=4; i++) {
+                topArr.push(x);
+            }; break;
+            case 2: visibilityGraph = [{visibility: true, text: `${topArr[0].symbol} : ${yValue1} USD`}, 
+            {visibility: true, text: `${topArr[1].symbol} : ${yValue2} USD`},
+            {visibility :false, text: ""}, 
+                { visibility: false, text: ""}, { visibility: false, text: ""}];
+            for (i=1; i<=3; i++) {
+                topArr.push(x);
+            }; break;
+            case 3: visibilityGraph = [{visibility: true, text: `${topArr[0].symbol} : ${yValue1} USD`}, 
+            {visibility: true, text: `${topArr[1].symbol} : ${yValue2} USD`},
+             {visibility: true, text: `${topArr[2].symbol} : ${yValue3} USD`}, 
+                {visibility: false, text: ""}, {visibility: false, text: ""}];
+                topArr.push(x); topArr.push(x); break;
+            case 4: visibilityGraph = [{visibility: true, text: `${topArr[0].symbol} : ${yValue1} USD`}, 
+            {visibility: true, text: `${topArr[1].symbol} : ${yValue2} USD`}, 
+            {visibility: true, text: `${topArr[2].symbol} : ${yValue3} USD`}, 
+                {visibility: true, text: `${topArr[3].symbol} : ${yValue4} USD`}, 
+                {visibility: false, text: ""}];
+                topArr.push(x); break;
+            case 5: visibilityGraph = [{visibility: true, text: `${topArr[0].symbol} : ${yValue1} USD`}, 
+            {visibility: true, text: `${topArr[1].symbol} : ${yValue2} USD`},
+            {visibility: true, text:`${topArr[2].symbol} : ${yValue3} USD`},
+             {visibility: true, text: `${topArr[3].symbol} : ${yValue4} USD`},
+             {visibility: true, text: `${topArr[4].symbol} : ${yValue5} USD`}];
+
+        }
 
         var dataPoints1 = [];
         var dataPoints2 = [];
@@ -307,7 +344,8 @@ $(function () {
                 xValueFormatString: "hh:mm:ss TT",
                 showInLegend: true,
                 name: `${topArr[0].symbol}`,
-                dataPoints: dataPoints1
+                dataPoints: dataPoints1,
+                visible: visibilityGraph[0].visibility
             },
             {
                 type: "line",
@@ -315,14 +353,35 @@ $(function () {
                 yValueFormatString: "###.00Wh",
                 showInLegend: true,
                 name: `${topArr[1].symbol}`,
-                dataPoints: dataPoints2
+                dataPoints: dataPoints2,
+                visible: visibilityGraph[1].visibility
             }, {
                 type: "line",
                 xValueType: "dateTime",
                 yValueFormatString: "###.00Wh",
                 showInLegend: true,
                 name: `${topArr[2].symbol}`,
-                dataPoints: dataPoints3
+                dataPoints: dataPoints3,
+                visible: visibilityGraph[2].visibility
+            },
+            {
+                type: "line",
+                xValueType: "dateTime",
+                yValueFormatString: "###.00Wh",
+                showInLegend: true,
+                name: `${topArr[3].symbol}`,
+                dataPoints: dataPoints4,
+                visible: visibilityGraph[3].visibility
+            },
+            {
+                type: "line",
+                xValueType: "dateTime",
+                yValueFormatString: "###.00Wh",
+                showInLegend: true,
+                name: `${topArr[4].symbol}`,
+                dataPoints: dataPoints5,
+                visible: visibilityGraph[4].visibility
+
             }]
         };
 
@@ -344,6 +403,8 @@ $(function () {
         var yValue1 = 800;
         var yValue2 = 810;
         var yValue3 = 780;
+        var yValue4 = 790;
+        var yValue5 = 820;
         
         var time = new Date;
         // starting at 10.00 am
@@ -351,20 +412,26 @@ $(function () {
         time.setMinutes(00);
         time.setSeconds(00);
         time.setMilliseconds(00);
-        
+
         function updateChart(count) {
             count = count || 1;
-            var deltaY1, deltaY2, deltaY3;
+            var deltaY1, deltaY2, deltaY3, deltaY4, deltaY5;
             for (var i = 0; i < count; i++) {
                 time.setTime(time.getTime() + updateInterval);
+                // here i insert the new values
+
                 deltaY1 = -1 + Math.random() * (1 + 1);
                 deltaY2 = -1 + Math.random() * (1 + 1);
                 deltaY3 = -1 + Math.random() * (1 + 1);
+                deltaY4 = -1 + Math.random() * (1 + 1);
+                deltaY5 = -1 + Math.random() * (1 + 1);
         
                 // adding random value and rounding it to two digits. 
                 yValue1 = Math.round((yValue1 + deltaY1) * 100) / 100;
                 yValue2 = Math.round((yValue2 + deltaY2) * 100) / 100;
                 yValue3 = Math.round((yValue3 + deltaY3) * 100) / 100;
+                yValue4 = Math.round((yValue4 + deltaY4) * 100) / 100;
+                yValue5 = Math.round((yValue5 + deltaY5) * 100) / 100;
         
                 // pushing the new values
                 dataPoints1.push({
@@ -379,12 +446,22 @@ $(function () {
                     x: time.getTime(),
                     y: yValue3
                 });
+                dataPoints4.push({
+                    x: time.getTime(),
+                    y: yValue4
+                });
+                dataPoints5.push({
+                    x: time.getTime(),
+                    y: yValue5
+                });
             }
         
             // updating legend text with  updated with y Value 
-            options.data[0].legendText = `${topArr[0].symbol} : ${yValue1} USD`;
-            options.data[1].legendText = `${topArr[1].symbol} : ${yValue2} USD`;
-            options.data[2].legendText = `${topArr[2].symbol} : ${yValue3} USD`;
+            options.data[0].legendText = visibilityGraph[0].text;
+            options.data[1].legendText = visibilityGraph[1].text;;
+            options.data[2].legendText = visibilityGraph[2].text;;
+            options.data[3].legendText = visibilityGraph[3].text;;
+            options.data[4].legendText = visibilityGraph[4].text;;
             $("#liveDiv").CanvasJSChart().render();
         }
         // generates first set of dataPoints 
