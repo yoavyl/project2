@@ -1,9 +1,7 @@
 // modal and toggle with functions i know
 // to seperate into small functions
-// use jquery-ajax
 // parallax
 // canvas + progressbar
-// progressbar for showmore
 // abuot with picture
 // sticky header
 // bootstraping all
@@ -24,7 +22,6 @@ $(function () {
     $("#home").css({"background-color" : "#2196F3", "color": "white"});
     $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
     
-
     $(async function () {
         try {
             const dataList = await getDataAsync("https://api.coingecko.com/api/v3/coins/list");
@@ -79,24 +76,6 @@ $(function () {
         $("#searchInput").val("");
     });
 
-    // function getData() {
-    //     return new Promise((resolve, reject) => {
-    //     const ajax = new XMLHttpRequest();
-    //     ajax.onreadystatechange = () => {
-    //         console.log(ajax.readyState);
-    //         if (ajax.readyState === 4) {
-    //             if (ajax.status === 200) {
-    //                 resolve(JSON.parse(ajax.responseText));
-    //             } else {
-    //                 reject(ajax.status + ": Error occured");
-    //             }
-    //         }
-    //     };
-    //     ajax.open("GET", "https://api.coingecko.com/api/v3/coins/list");
-    //     ajax.send();
-    //     });
-    // }
-
     function printData(dataList) {
         // for (let i=0 ; i<100 ; i++) {
         for (coin of dataList) {
@@ -141,17 +120,15 @@ $(function () {
             // $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
             const coinString = sessionStorage.getItem(`${more.name}`);  
             if (coinString === null) {
-                console.log(more.name + " is not on session storage")
-                let myUserPromise = getMore(more.id);
-                myUserPromise = myUserPromise.then(printMore);
-                myUserPromise.catch(err => alert(err));
+                console.log(more.name + " is not on session storage");
+                getMore(more.id);
                 setTimeout ( ()=> {
                     sessionStorage.removeItem(`${more.name}`)
                 }, 120000);
             } else {
                 const coinObj = JSON.parse(coinString); 
                 $(`p[id="${coinObj.id}"]`).html(
-                    `<img src="${coinObj.img}"/> 
+                    `<img src="${coinObj.img}"/><br/> 
                     Current exchange rate: ${coinObj.usd}$,
                     ${coinObj.eur}€,
                     ${coinObj.ils}₪`);                
@@ -162,28 +139,18 @@ $(function () {
         }
     }
     
-    function getMore(id) {
-        return new Promise((resolve, reject) => {
-            const ajax = new XMLHttpRequest();
-            ajax.onreadystatechange = () => {
-                console.log(ajax.readyState);
-                if (ajax.readyState === 4) {
-                    if (ajax.status === 200) {
-                        resolve(JSON.parse(ajax.responseText));
-                    } else {
-                        reject(ajax.status + ": Error occured");
-                    }
-                }
-            };
-            console.log(id);
-            ajax.open("GET", `https://api.coingecko.com/api/v3/coins/${id}`);
-            ajax.send();
-        });
+    async function getMore(id) {
+        try {
+            const coin = await getDataAsync(`https://api.coingecko.com/api/v3/coins/${id}`);
+            printMore(coin);
+        }
+        catch (err) {
+            alert("Error: " + err.status);
+        }
     }
             
     function printMore(coin) {
         const coinMoreInfo = {    
-            // symbol: coin.symbol,
             id: coin.id,
             img: coin.image.thumb,                      
             usd: coin.market_data.current_price.usd,
