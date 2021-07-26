@@ -265,110 +265,216 @@ $(function () {
             console.log("coin: " + coin);
             console.log("USD :" + topFiveUSD[coin].USD);
         }    
-    } 
-    
-    $("#live").click(function () {
         drawChart();
-    })
+    }
     
+    // API here:
+    // https://canvasjs.com/jquery-charts/dynamic-live-multi-series-chart/
+
     function drawChart() {
+
+        var dataPoints1 = [];
+        var dataPoints2 = [];
+        var dataPoints3 = [];
+        var dataPoints4 = [];
+        var dataPoints5 = [];
+        
         var options = {
             width: 800,
-            exportEnabled: true,
-            animationEnabled: true,
-            title:{
-                text: "Units Sold VS Profit"
+            title: {
+                text: "Your selected cryptocurrencies rate in USD"
             },
-            subtitles: [{
-                text: "Click Legend to Hide or Unhide Data Series"
-            }],
             axisX: {
-                title: "States"
+                title: "chart updates every 2 secs"
             },
             axisY: {
-                title: "Coin 1",
-                titleFontColor: "#4F81BC",
-                lineColor: "#4F81BC",
-                labelFontColor: "#4F81BC",
-                tickColor: "#4F81BC"
-            },
-            axisY2: {
-                title: "Coin 2",
-                titleFontColor: "#C0504E",
-                lineColor: "#C0504E",
-                labelFontColor: "#C0504E",
-                tickColor: "#C0504E"
-            },
-            axisY3: {
-                title: "Coin 3",
-                titleFontColor: "Yellow",
-                lineColor: "Yellow",
-                labelFontColor: "Yellow",
-                tickColor: "Yellow"
+                suffix: "USD"
             },
             toolTip: {
                 shared: true
             },
             legend: {
                 cursor: "pointer",
+                verticalAlign: "top",
+                fontSize: 22,
+                fontColor: "dimGrey",
                 itemclick: toggleDataSeries
             },
             data: [{
-                type: "spline",
-                name: "Coin 1",
+                type: "line",
+                xValueType: "dateTime",
+                yValueFormatString: "###.00Wh",
+                xValueFormatString: "hh:mm:ss TT",
                 showInLegend: true,
-                xValueFormatString: "MMM YYYY",
-                yValueFormatString: "#,##0 Units",
-                dataPoints: [
-                    { x: new Date(2016, 0, 1),  y: 120 },
-                    { x: new Date(2016, 1, 1), y: 135 },
-                    { x: new Date(2016, 2, 1), y: 144 },
-                    { x: new Date(2016, 3, 1),  y: 103 },
-                    { x: new Date(2016, 4, 1),  y: 93 },
-                    { x: new Date(2016, 5, 1),  y: 129 },
-                    { x: new Date(2016, 6, 1), y: 143 },
-                    { x: new Date(2016, 7, 1), y: 156 },
-                    { x: new Date(2016, 8, 1),  y: 122 },
-                    { x: new Date(2016, 9, 1),  y: 106 },
-                    { x: new Date(2016, 10, 1),  y: 137 },
-                    { x: new Date(2016, 11, 1), y: 142 }
-                ]
+                name: `${topArr[0].symbol}`,
+                dataPoints: dataPoints1
             },
             {
-                type: "spline",
-                name: "Coin2",
-                axisYType: "secondary",
+                type: "line",
+                xValueType: "dateTime",
+                yValueFormatString: "###.00Wh",
                 showInLegend: true,
-                xValueFormatString: "MMM YYYY",
-                yValueFormatString: "$#,##0.#",
-                dataPoints: [
-                    { x: new Date(2016, 0, 1),  y: 19034.5 },
-                    { x: new Date(2016, 1, 1), y: 20015 },
-                    { x: new Date(2016, 2, 1), y: 27342 },
-                    { x: new Date(2016, 3, 1),  y: 20088 },
-                    { x: new Date(2016, 4, 1),  y: 20234 },
-                    { x: new Date(2016, 5, 1),  y: 29034 },
-                    { x: new Date(2016, 6, 1), y: 30487 },
-                    { x: new Date(2016, 7, 1), y: 32523 },
-                    { x: new Date(2016, 8, 1),  y: 20234 },
-                    { x: new Date(2016, 9, 1),  y: 27234 },
-                    { x: new Date(2016, 10, 1),  y: 33548 },
-                    { x: new Date(2016, 11, 1), y: 32534 }
-                ]
-            },
-        ]
+                name: `${topArr[1].symbol}`,
+                dataPoints: dataPoints2
+            }, {
+                type: "line",
+                xValueType: "dateTime",
+                yValueFormatString: "###.00Wh",
+                showInLegend: true,
+                name: `${topArr[2].symbol}`,
+                dataPoints: dataPoints3
+            }]
         };
-        $("#liveDiv").CanvasJSChart(options);
-        }
+
+        var chart = $("#liveDiv").CanvasJSChart(options);
+
 
         function toggleDataSeries(e) {
             if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
                 e.dataSeries.visible = false;
-            } else {
+            }
+            else {
                 e.dataSeries.visible = true;
             }
             e.chart.render();
         }
+        
+        var updateInterval = 2000;
+        // initial value
+        var yValue1 = 800;
+        var yValue2 = 810;
+        var yValue3 = 780;
+        
+        var time = new Date;
+        // starting at 10.00 am
+        time.setHours(10);
+        time.setMinutes(00);
+        time.setSeconds(00);
+        time.setMilliseconds(00);
+        
+        function updateChart(count) {
+            count = count || 1;
+            var deltaY1, deltaY2, deltaY3;
+            for (var i = 0; i < count; i++) {
+                time.setTime(time.getTime() + updateInterval);
+                deltaY1 = -1 + Math.random() * (1 + 1);
+                deltaY2 = -1 + Math.random() * (1 + 1);
+                deltaY3 = -1 + Math.random() * (1 + 1);
+        
+                // adding random value and rounding it to two digits. 
+                yValue1 = Math.round((yValue1 + deltaY1) * 100) / 100;
+                yValue2 = Math.round((yValue2 + deltaY2) * 100) / 100;
+                yValue3 = Math.round((yValue3 + deltaY3) * 100) / 100;
+        
+                // pushing the new values
+                dataPoints1.push({
+                    x: time.getTime(),
+                    y: yValue1
+                });
+                dataPoints2.push({
+                    x: time.getTime(),
+                    y: yValue2
+                });
+                dataPoints3.push({
+                    x: time.getTime(),
+                    y: yValue3
+                });
+            }
+        
+            // updating legend text with  updated with y Value 
+            options.data[0].legendText = `${topArr[0].symbol} : ${yValue1} USD`;
+            options.data[1].legendText = `${topArr[1].symbol} : ${yValue2} USD`;
+            options.data[2].legendText = `${topArr[2].symbol} : ${yValue3} USD`;
+            $("#liveDiv").CanvasJSChart().render();
+        }
+        // generates first set of dataPoints 
+        updateChart(100);
+        setInterval(function () { updateChart() }, updateInterval);
+        
+        }
+        // var options = {
+        //     width: 800,
+        //     exportEnabled: true,
+        //     animationEnabled: true,
+        //     title:{
+        //         text: "Your selected cryptocurrencies rate in USD"
+        //     },
+        //     subtitles: [{
+        //         text: "Click Legend to Hide or Unhide Data Series"
+        //     }],
+        //     axisX: {
+        //         title: "seconds"
+        //     },
+        //     axisY: {
+        //         title: "USD",
+        //         titleFontColor: "#4F81BC",
+        //         lineColor: "#4F81BC",
+        //         labelFontColor: "#4F81BC",
+        //         tickColor: "#4F81BC"
+        //     },
+        //     toolTip: {
+        //         shared: true
+        //     },
+        //     legend: {
+        //         cursor: "pointer",
+        //         itemclick: toggleDataSeries
+        //     },
+        //     data: [{
+        //         type: "spline",
+        //         name: `${topArr[0].symbol}`,
+        //         showInLegend: true,
+        //         xValueFormatString: "MMM YYYY",
+        //         yValueFormatString: "#,##0 Units",
+        //         dataPoints: [
+        //             { x: new Date(2016, 0, 1),  y: 120 },
+        //             { x: new Date(2016, 1, 1), y: 135 },
+        //             { x: new Date(2016, 2, 1), y: 144 },
+        //             { x: new Date(2016, 3, 1),  y: 103 },
+        //             { x: new Date(2016, 4, 1),  y: 93 },
+        //             { x: new Date(2016, 5, 1),  y: 129 },
+        //             { x: new Date(2016, 6, 1), y: 143 },
+        //             { x: new Date(2016, 7, 1), y: 156 },
+        //             { x: new Date(2016, 8, 1),  y: 122 },
+        //             { x: new Date(2016, 9, 1),  y: 106 },
+        //             { x: new Date(2016, 10, 1),  y: 137 },
+        //             { x: new Date(2016, 11, 1), y: 142 }
+        //         ]
+        //     },
+        //     {
+        //         type: "spline",
+        //         name: `${topArr[1].symbol}`,
+        //         axisYType: "secondary",
+        //         showInLegend: true,
+        //         xValueFormatString: "MMM YYYY",
+        //         yValueFormatString: "$#,##0.#",
+        //         dataPoints: [
+        //             { x: new Date(2016, 0, 1),  y: 19034.5 },
+        //             { x: new Date(2016, 1, 1), y: 20015 },
+        //             { x: new Date(2016, 2, 1), y: 27342 },
+        //             { x: new Date(2016, 3, 1),  y: 20088 },
+        //             { x: new Date(2016, 4, 1),  y: 20234 },
+        //             { x: new Date(2016, 5, 1),  y: 29034 },
+        //             { x: new Date(2016, 6, 1), y: 30487 },
+        //             { x: new Date(2016, 7, 1), y: 32523 },
+        //             { x: new Date(2016, 8, 1),  y: 20234 },
+        //             { x: new Date(2016, 9, 1),  y: 27234 },
+        //             { x: new Date(2016, 10, 1),  y: 33548 },
+        //             { x: new Date(2016, 11, 1), y: 32534 }
+        //         ]
+        //     },
+        // ]
+        // };
+        // $("#liveDiv").CanvasJSChart(options);
+        // }
+
+        // function toggleDataSeries(e) {
+        //     if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+        //         e.dataSeries.visible = false;
+        //     } else {
+        //         e.dataSeries.visible = true;
+        //     }
+        //     e.chart.render();
+        // }
         
         
 
