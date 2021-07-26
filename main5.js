@@ -1,11 +1,24 @@
 // modal and toggle with functions i know
 // to seperate into small functions
-// locate "more" button relative to div a-la project1
-// style the more on modal
 // use jquery-ajax
-// "show less" after clicking show more
+// parallax
+// canvas + progressbar
+// progressbar for showmore
+// abuot with picture
+// sticky header
+// bootstraping all
+
 
 $(function () {
+
+    $( document ).ajaxStart(function() {
+        $( "#progressbar").hide();
+      });
+
+      $(document).ajaxStop(function(){
+        alert("All AJAX requests completed");
+      });
+
     // localStorage.clear();
     $("#aboutDiv, #liveDiv").hide();
     $("#home").css({"background-color" : "#2196F3", "color": "white"});
@@ -68,7 +81,7 @@ $(function () {
         for (coin of dataList) {
             if (coin.symbol.length === 3) {
                 createCoin(coin, "#containerDiv");
-                $("#progressbar").hide();
+                $("#progressbar").hide(); 
             }
         }                        
     }
@@ -124,7 +137,6 @@ $(function () {
                 console.log("got it from session storages");
                 console.log("more.id: " + more.id)
                 $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
-                // here there is a problem of collapsing more info
             }
         }
     }
@@ -150,7 +162,8 @@ $(function () {
             
     function printMore(coin) {
         const coinMoreInfo = {    
-            symbol: coin.symbol,
+            // symbol: coin.symbol,
+            id: coin.id,
             img: coin.image.thumb,                      
             usd: coin.market_data.current_price.usd,
             eur: coin.market_data.current_price.eur,

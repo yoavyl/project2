@@ -15,6 +15,20 @@
         $( function() {
           $( "#progressbar" ).progressbar({value: false});
         } );
+//         $(document).ready(function(){
+//   $(document).ajaxStop(function(){
+//     alert("All AJAX requests completed");
+//   });
+//         $( document ).ajaxStop(function() {
+//     $( "#progressbar" ).hide();
+//   });  
+        </script>
+        <script>
+            (document).ready(function(){
+  $(document).ajaxStop(function(){
+    alert("All AJAX requests completed");
+});
+});
         </script>
 </head>
 <body>
