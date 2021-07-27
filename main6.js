@@ -24,7 +24,8 @@ $(function () {
     
     $(async function () {
         try {
-            const dataList = await getDataAsync("https://api.coingecko.com/api/v3/coins/list");
+            const dataList = await getDataAsync("https://api.coingecko.com/api/v3/coins/");
+            // instead of /list, which has a lot of dead weight
             printData(dataList);
         }
         catch (err) {
@@ -84,10 +85,10 @@ $(function () {
     function printData(dataList) {
         // for (let i=0 ; i<100 ; i++) {
         for (coin of dataList) {
-            if (coin.symbol.length === 3) {
+            // if (coin.symbol.length === 3) {
                 createCoin(coin, "#containerDiv");
                 // $("#progressbar").hide(); here
-            }
+            // }
         }                        
     }
     
@@ -263,17 +264,22 @@ $(function () {
         }
     }
 
-    let reference = [];
+    let reference;
 
     function printFive(topFiveUSD) {
+        reference = [];
         console.log(topFiveUSD);
         $("#liveDiv").empty();
         for (coin in topFiveUSD) {
             console.log("coin: " + coin);
-            console.log("USD :" + topFiveUSD[coin].USD);
-            reference.push({usd: topFiveUSD[coin].USD}); // added last
-            // if not undefined!!!
-        }    
+            console.log("USD :" + topFiveUSD[coin].USD);  // if not undefined!!!
+            reference.push({usd: topFiveUSD[coin].USD});
+        }
+        console.log(topArr.length);
+        for (let i=topArr.length ; i<5 ; i++) {
+            console.log(i)
+            reference.push({usd: 0});
+        }
         drawChart();
     }
     
@@ -393,16 +399,12 @@ $(function () {
         
         var updateInterval = 2000;
         // initial value
-        var yValue1 = 780;     // added last. insert dynamically, depends if the is data
-        var yValue2 = 790;
-        var yValue3 = 800; 
-        var yValue4 = 810;
-        var yValue5 = 820;
-        // var yValue1 = reference[0].usd;     // added last
-        // var yValue2 = reference[1].usd;
-        // var yValue3 = reference[2].usd;
-        // var yValue4 = reference[3].usd;
-        // var yValue5 = reference[4].usd;
+         
+        var yValue1 = reference[0].usd;     // added last. insert dynamically, depends if the is data
+        var yValue4 = reference[3].usd;
+        var yValue2 = reference[1].usd;
+        var yValue3 = reference[2].usd; 
+        var yValue5 = reference[4].usd;
         
         var time = new Date;
         // starting at 10.00 am
