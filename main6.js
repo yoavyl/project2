@@ -57,13 +57,18 @@ $(function () {
     
 
     $("#live").click( function () {
-        $("#live").css({"background-color" : "#2196F3", "color": "white"});
-        $("#home, #about").css({"background-color" : "white", "color": "#2196F3"});
-        $("#containerDiv, #aboutDiv").hide();
-        $("#liveDiv").show();
         if (topArr.length !==0) {
+            $("#live").css({"background-color" : "#2196F3", "color": "white"});
+            $("#home, #about").css({"background-color" : "white", "color": "#2196F3"});
+            $("#containerDiv, #aboutDiv").hide();
+            $("#liveDiv").empty().show();
             getFive();
-        } else { // modal/text with "no favorites"
+        } else { 
+            $(".modal-content").html(`
+                <span class="close">&times;</span>
+                <p>We are very sorry, but there are no favorite coins to report.
+                </p>`);
+            openModal();
         }
     });
     $("#about").click( function () {
@@ -435,7 +440,7 @@ $(function () {
 
         function updateChart(count) {
             count = count || 1;
-            var deltaY1, deltaY2, deltaY3, deltaY4, deltaY5;
+            // var deltaY1, deltaY2, deltaY3, deltaY4, deltaY5;
             for (var i = 0; i < count; i++) {
                 time.setTime(time.getTime() + updateInterval);
                 // here i insert the new values
