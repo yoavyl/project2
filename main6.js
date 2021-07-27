@@ -284,6 +284,7 @@ $(function () {
     // MUST SPLICE TOPARRMAP BACK WHEN WE LEAVE LIVE REPORT
 
     function drawChart() {
+        visibilityGraph = [];
         for (i=0; i<topArr.length; i++) {
             topArrMap[i].symbol = topArr[i].symbol;
         }
@@ -347,7 +348,8 @@ $(function () {
                 suffix: "USD"
             },
             toolTip: {
-                shared: true
+                shared: false
+                // format with content formatter https://canvasjs.com/docs/charts/chart-options/tooltip/content-formatter/
             },
             legend: {
                 cursor: "pointer",
