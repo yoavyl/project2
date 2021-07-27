@@ -1,7 +1,7 @@
 // modal and toggle with functions i know
 // to seperate into small functions
 // parallax
-// canvas + progressbar
+// restart progressbar. disable instead of destroy?
 // abuot with picture
 // sticky header
 // bootstraping all
@@ -46,6 +46,7 @@ $(function () {
     let topArrMap = [{symbol: "xxx"},{symbol: "xxx"},{symbol: "xxx"},{symbol: "xxx"},{symbol: "xxx"}];
     var topArr = []; 
     $("#home").click( function () {
+        clearInterval(intervalId);
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#liveDiv, #aboutDiv").hide();
@@ -54,6 +55,7 @@ $(function () {
         $(".data").show();
     });
     
+
     $("#live").click( function () {
         $("#live").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #about").css({"background-color" : "white", "color": "#2196F3"});
@@ -65,6 +67,7 @@ $(function () {
         }
     });
     $("#about").click( function () {
+        clearInterval(intervalId);
         $("#about").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#containerDiv, #liveDiv").hide();
@@ -72,6 +75,7 @@ $(function () {
         $("#aboutDiv").show();
     });
     $("#searchButton").click(() => {
+        clearInterval(intervalId);
         const value = $("#searchInput").val();
         $("#liveDiv, #aboutDiv").hide();
         $("#containerDiv").css({"left": "39%", "margin-top" : "40px"}).show();
@@ -246,14 +250,30 @@ $(function () {
         }
       }
 
-      async function getFive() {
-        let str = "";
+    let str ="";
+
+    var intervalId;
+
+    function getFive() {
+        $("#liveDiv").empty();
+        str = "";
         for (coin of topArr) {
             str+=`${coin.symbol},`;
         }
-        console.log("str: " + str);
-        // use reduce?
-        const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${str}&tsyms=USD`;
+        getGraph();
+        $( "#progressbar" ).progressbar( "destroy" );
+        // while (graph===true) {
+            intervalId = setInterval( ()=> {     // need to understand how i stop it
+                getGraph();
+            }, 2000);
+        // }
+    }
+
+    // need to restart progress bar?
+        
+
+    async function getGraph() {
+        const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${str}&tsyms=USD`; 
         try {
             const coin = await getDataAsync(url);
             console.log("got data")
@@ -269,15 +289,14 @@ $(function () {
     function printFive(topFiveUSD) {
         reference = [];
         console.log(topFiveUSD);
-        $("#liveDiv").empty();
         for (coin in topFiveUSD) {
             console.log("coin: " + coin);
             console.log("USD :" + topFiveUSD[coin].USD);  // if not undefined!!!
             reference.push({usd: topFiveUSD[coin].USD});
         }
-        console.log(topArr.length);
+        console.log("topArr length: " + topArr.length);
         for (let i=topArr.length ; i<5 ; i++) {
-            console.log(i)
+            // console.log(i)
             reference.push({usd: 0});
         }
         drawChart();
@@ -290,6 +309,7 @@ $(function () {
     // MUST SPLICE TOPARRMAP BACK WHEN WE LEAVE LIVE REPORT
 
     function drawChart() {
+        // how i restart progressbar?
         visibilityGraph = [];
         for (i=0; i<topArr.length; i++) {
             topArrMap[i].symbol = topArr[i].symbol;
@@ -400,7 +420,7 @@ $(function () {
         var updateInterval = 2000;
         // initial value
          
-        var yValue1 = reference[0].usd;     // added last. insert dynamically, depends if the is data
+        var yValue1 = reference[0].usd;     
         var yValue4 = reference[3].usd;
         var yValue2 = reference[1].usd;
         var yValue3 = reference[2].usd; 
@@ -408,10 +428,10 @@ $(function () {
         
         var time = new Date;
         // starting at 10.00 am
-        time.setHours(10);
-        time.setMinutes(00);
-        time.setSeconds(00);
-        time.setMilliseconds(00);
+        // time.setHours(10);
+        // time.setMinutes(00);
+        // time.setSeconds(00);
+        // time.setMilliseconds(00);
 
         function updateChart(count) {
             count = count || 1;
@@ -420,19 +440,25 @@ $(function () {
                 time.setTime(time.getTime() + updateInterval);
                 // here i insert the new values
 
-                deltaY1 = -1 + Math.random() * (1 + 1);
-                deltaY2 = -1 + Math.random() * (1 + 1);
-                deltaY3 = -1 + Math.random() * (1 + 1);
-                deltaY4 = -1 + Math.random() * (1 + 1);
-                deltaY5 = -1 + Math.random() * (1 + 1);
+                // deltaY1 = -1 + Math.random() * (1 + 1);
+                // deltaY2 = -1 + Math.random() * (1 + 1);
+                // deltaY3 = -1 + Math.random() * (1 + 1);
+                // deltaY4 = -1 + Math.random() * (1 + 1);
+                // deltaY5 = -1 + Math.random() * (1 + 1);
         
                 // adding random value and rounding it to two digits. 
-                yValue1 = Math.round((yValue1 + deltaY1) * 100) / 100;
-                yValue2 = Math.round((yValue2 + deltaY2) * 100) / 100;
-                yValue3 = Math.round((yValue3 + deltaY3) * 100) / 100;
-                yValue4 = Math.round((yValue4 + deltaY4) * 100) / 100;
-                yValue5 = Math.round((yValue5 + deltaY5) * 100) / 100;
+                // yValue1 = Math.round((yValue1 + deltaY1) * 100) / 100;
+                // yValue2 = Math.round((yValue2 + deltaY2) * 100) / 100;
+                // yValue3 = Math.round((yValue3 + deltaY3) * 100) / 100;
+                // yValue4 = Math.round((yValue4 + deltaY4) * 100) / 100;
+                // yValue5 = Math.round((yValue5 + deltaY5) * 100) / 100;
         
+                yValue1 = reference[0].usd;     
+                yValue4 = reference[3].usd;
+                yValue2 = reference[1].usd;
+                yValue3 = reference[2].usd; 
+                yValue5 = reference[4].usd;
+
                 // pushing the new values
                 dataPoints1.push({
                     x: time.getTime(),
