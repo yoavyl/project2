@@ -263,12 +263,16 @@ $(function () {
         }
     }
 
+    let reference = [];
+
     function printFive(topFiveUSD) {
         console.log(topFiveUSD);
         $("#liveDiv").empty();
         for (coin in topFiveUSD) {
             console.log("coin: " + coin);
             console.log("USD :" + topFiveUSD[coin].USD);
+            reference.push({usd: topFiveUSD[coin].USD}); // added last
+            // if not undefined!!!
         }    
         drawChart();
     }
@@ -284,37 +288,46 @@ $(function () {
             topArrMap[i].symbol = topArr[i].symbol;
         }
         let x = {symbol: "xxx"};
-        switch (topArr.length) {
-            case 1: visibilityGraph = [{visibility: true, showInLegend: true},
-             {visibility: false, showInLegend: false}, {visibility: false, showInLegend: false}, {visibility: false, showInLegend: false},
-            {visibility:false, showInLegend: false}]; 
-            for (i=1; i<=4; i++) {
+        for (i=1; i<=5; i++) {
+            if (i<=topArr.length) {
+                visibilityGraph.push({visibility: true, showInLegend: true})
+            } else {
+                visibilityGraph.push({visibility: false, showInLegend: false});
                 topArrMap.push(x);
-            }; break;
-            case 2: visibilityGraph = [{visibility: true, showInLegend: true}, 
-            {visibility: true, showInLegend: true},
-            {visibility :false, showInLegend: false}, 
-                { visibility: false, showInLegend: false}, { visibility: false, tshowInLegend: false}];
-            for (i=1; i<=3; i++) {
-                topArrMap.push(x);
-            }; break;
-            case 3: visibilityGraph = [{visibility: true, showInLegend: true}, 
-            {visibility: true, showInLegend: true},
-             {visibility: true, showInLegend: true}, 
-                {visibility: false, showInLegend: false}, {visibility: false, showInLegend: false}];
-                topArrMap.push(x); topArrMap.push(x); break;
-            case 4: visibilityGraph = [{visibility: true, showInLegend: true}, 
-            {visibility: true, showInLegend: true}, 
-            {visibility: true, showInLegend: true}, 
-                {visibility: true, showInLegend: true}, 
-                {visibility: false, showInLegend: false}]; topArrMap.push(x); break;
-            case 5: visibilityGraph = [{visibility: true, showInLegend: true}, 
-            {visibility: true, showInLegend: true},
-            {visibility: true, showInLegend: true},
-             {visibility: true, showInLegend: true},
-             {visibility: true, showInLegend: true}];
-
+            }
         }
+
+        // switch (topArr.length) {
+        //     case 1: visibilityGraph = [{visibility: true, showInLegend: true},
+        //      {visibility: false, showInLegend: false}, {visibility: false, showInLegend: false}, {visibility: false, showInLegend: false},
+        //     {visibility:false, showInLegend: false}]; 
+        //     for (i=1; i<=4; i++) {
+        //         topArrMap.push(x);
+        //     }; break;
+        //     case 2: visibilityGraph = [{visibility: true, showInLegend: true}, 
+            // {visibility: true, showInLegend: true},
+            // {visibility :false, showInLegend: false}, 
+            //     { visibility: false, showInLegend: false}, { visibility: false, tshowInLegend: false}];
+            // for (i=1; i<=3; i++) {
+            //     topArrMap.push(x);
+            // }; break;
+            // case 3: visibilityGraph = [{visibility: true, showInLegend: true}, 
+            // {visibility: true, showInLegend: true},
+            //  {visibility: true, showInLegend: true}, 
+            //     {visibility: false, showInLegend: false}, {visibility: false, showInLegend: false}];
+            //     topArrMap.push(x); topArrMap.push(x); break;
+            // case 4: visibilityGraph = [{visibility: true, showInLegend: true}, 
+            // {visibility: true, showInLegend: true}, 
+        //     {visibility: true, showInLegend: true}, 
+        //         {visibility: true, showInLegend: true}, 
+        //         {visibility: false, showInLegend: false}]; topArrMap.push(x); break;
+        //     case 5: visibilityGraph = [{visibility: true, showInLegend: true}, 
+        //     {visibility: true, showInLegend: true},
+        //     {visibility: true, showInLegend: true},
+        //      {visibility: true, showInLegend: true},
+        //      {visibility: true, showInLegend: true}];
+
+        // }
 
         var dataPoints1 = [];
         var dataPoints2 = [];
@@ -410,11 +423,16 @@ $(function () {
         
         var updateInterval = 2000;
         // initial value
-        var yValue1 = 800;
-        var yValue2 = 810;
-        var yValue3 = 780;
-        var yValue4 = 790;
+        var yValue1 = 780;     // added last. insert dynamically, depends if the is data
+        var yValue2 = 790;
+        var yValue3 = 800; 
+        var yValue4 = 810;
         var yValue5 = 820;
+        // var yValue1 = reference[0].usd;     // added last
+        // var yValue2 = reference[1].usd;
+        // var yValue3 = reference[2].usd;
+        // var yValue4 = reference[3].usd;
+        // var yValue5 = reference[4].usd;
         
         var time = new Date;
         // starting at 10.00 am
