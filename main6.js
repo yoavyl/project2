@@ -5,6 +5,7 @@
 // abuot with picture
 // sticky header
 // bootstraping all
+// clean console.logs
 
 
 $(function () {
@@ -18,9 +19,14 @@ $(function () {
       });
 
     // localStorage.clear();
-    $("#aboutDiv, #liveDiv").hide();
-    $("#home").css({"background-color" : "#2196F3", "color": "white"});
-    $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
+
+    function buttonsHomeStatus() {
+        $("#aboutDiv, #liveDiv").hide();
+        $("#home").css({"background-color" : "#2196F3", "color": "white"});
+        $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
+    }
+
+    buttonsHomeStatus();
     
     $(async function () {
         try {
@@ -48,9 +54,7 @@ $(function () {
     $("#home").click( function () {
         clearInterval(intervalId);
         $( "#progressbar" ).progressbar( {disabled: false} );
-        $("#home").css({"background-color" : "#2196F3", "color": "white"});
-        $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
-        $("#liveDiv, #aboutDiv").hide();
+        buttonsHomeStatus();
         $("#liveDov").empty();
         $("#containerDiv").css({"left": "20%", "margin-top" : "5px"}).show();
         $(".data").show();
@@ -83,23 +87,34 @@ $(function () {
         $("#liveDov").empty();
         $("#aboutDiv").show();
     });
+
     $("#searchButton").click(() => {
-        clearInterval(intervalId);
         const value = $("#searchInput").val();
-        $("#liveDiv, #aboutDiv").hide();
-        $("#containerDiv").css({"left": "39%", "margin-top" : "40px"}).show();
-        $(".data").hide();
-        $("#liveDov").empty();
-        topArrMap = [];
-        $(`#${value}`).show() // css this to put in the middle?
-        $("#searchInput").val("");
+        if (bankArray.find(item => item == value) == undefined) {
+            $(".modal-content").html(`
+                <span class="close">&times;</span>
+                <p>No crypto is named "${value}", please search again with the exact expression.
+                </p>`);
+            openModal();
+        } else {
+            clearInterval(intervalId);
+            $("#liveDiv, #aboutDiv").hide();
+            $("#containerDiv").css({"left": "39%", "margin-top" : "40px"}).show();
+            $(".data").hide();
+            $("#liveDov").empty();
+            topArrMap = [];
+            $(`#${value}`).show() // css this to put in the middle?
+            $("#searchInput").val("");
+        }        
     });
 
+    const bankArray =[];
     function printData(dataList) {
         // for (let i=0 ; i<100 ; i++) {
         for (coin of dataList) {
             // if (coin.symbol.length === 3) {
                 createCoin(coin, "#containerDiv");
+                bankArray.push(coin.symbol); // need that for search
                 // $("#progressbar").hide(); here
             // }
         }                        
@@ -181,6 +196,7 @@ $(function () {
         sessionStorage.setItem(`${coin.name}`, coinToStore);    
         console.log("saved " + coin.name + " to session storage");
         console.log("coin id: " + coin.id);
+        // make this into function
         $(`p[id="${coin.id}"]`).html(
             `<img src="${coin.image.thumb}"/><br/> 
             Current exchange rate: ${coin.market_data.current_price.usd}$,
@@ -260,7 +276,6 @@ $(function () {
       }
 
     let str ="";
-
     var intervalId;
 
     function getFive() {
@@ -277,9 +292,6 @@ $(function () {
             }, 2000);
         // }
     }
-
-    // need to restart progress bar?
-        
 
     async function getGraph() {
         const url = `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${str}&tsyms=USD`; 
@@ -318,7 +330,6 @@ $(function () {
     // MUST SPLICE TOPARRMAP BACK WHEN WE LEAVE LIVE REPORT
 
     function drawChart() {
-        // how i restart progressbar?
         visibilityGraph = [];
         for (i=0; i<topArr.length; i++) {
             topArrMap[i].symbol = topArr[i].symbol;
@@ -447,21 +458,8 @@ $(function () {
             // var deltaY1, deltaY2, deltaY3, deltaY4, deltaY5;
             for (var i = 0; i < count; i++) {
                 time.setTime(time.getTime() + updateInterval);
+                
                 // here i insert the new values
-
-                // deltaY1 = -1 + Math.random() * (1 + 1);
-                // deltaY2 = -1 + Math.random() * (1 + 1);
-                // deltaY3 = -1 + Math.random() * (1 + 1);
-                // deltaY4 = -1 + Math.random() * (1 + 1);
-                // deltaY5 = -1 + Math.random() * (1 + 1);
-        
-                // adding random value and rounding it to two digits. 
-                // yValue1 = Math.round((yValue1 + deltaY1) * 100) / 100;
-                // yValue2 = Math.round((yValue2 + deltaY2) * 100) / 100;
-                // yValue3 = Math.round((yValue3 + deltaY3) * 100) / 100;
-                // yValue4 = Math.round((yValue4 + deltaY4) * 100) / 100;
-                // yValue5 = Math.round((yValue5 + deltaY5) * 100) / 100;
-        
                 yValue1 = referenceArray[0].usd;     
                 yValue4 = referenceArray[3].usd;
                 yValue2 = referenceArray[1].usd;
