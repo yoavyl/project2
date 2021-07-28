@@ -47,6 +47,7 @@ $(function () {
     var topArr = []; 
     $("#home").click( function () {
         clearInterval(intervalId);
+        $( "#progressbar" ).progressbar( {disabled: false} );
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#liveDiv, #aboutDiv").hide();
@@ -66,7 +67,8 @@ $(function () {
         } else { 
             $(".modal-content").html(`
                 <span class="close">&times;</span>
-                <p>We are very sorry, but there are no favorite coins to report.
+                <p>We are very sorry, but there are no favorite coins to report. Please hit Home button
+                and select 1-5 coins.
                 </p>`);
             openModal();
         }
@@ -266,7 +268,7 @@ $(function () {
             str+=`${coin.symbol},`;
         }
         getGraph();
-        $( "#progressbar" ).progressbar( "destroy" );
+        $( "#progressbar" ).progressbar( {disabled: true} );
         // while (graph===true) {
             intervalId = setInterval( ()=> {     // need to understand how i stop it
                 getGraph();
@@ -289,20 +291,20 @@ $(function () {
         }
     }
 
-    let reference;
+    let referenceArray;
 
     function printFive(topFiveUSD) {
-        reference = [];
+        referenceArray = [];
         console.log(topFiveUSD);
         for (coin in topFiveUSD) {
             console.log("coin: " + coin);
             console.log("USD :" + topFiveUSD[coin].USD);  // if not undefined!!!
-            reference.push({usd: topFiveUSD[coin].USD});
+            referenceArray.push({usd: topFiveUSD[coin].USD});
         }
         console.log("topArr length: " + topArr.length);
         for (let i=topArr.length ; i<5 ; i++) {
             // console.log(i)
-            reference.push({usd: 0});
+            referenceArray.push({usd: 0});
         }
         drawChart();
     }
@@ -425,11 +427,11 @@ $(function () {
         var updateInterval = 2000;
         // initial value
          
-        var yValue1 = reference[0].usd;     
-        var yValue4 = reference[3].usd;
-        var yValue2 = reference[1].usd;
-        var yValue3 = reference[2].usd; 
-        var yValue5 = reference[4].usd;
+        var yValue1 = referenceArray[0].usd;     
+        var yValue4 = referenceArray[3].usd;
+        var yValue2 = referenceArray[1].usd;
+        var yValue3 = referenceArray[2].usd; 
+        var yValue5 = referenceArray[4].usd;
         
         var time = new Date;
         // starting at 10.00 am
@@ -458,11 +460,11 @@ $(function () {
                 // yValue4 = Math.round((yValue4 + deltaY4) * 100) / 100;
                 // yValue5 = Math.round((yValue5 + deltaY5) * 100) / 100;
         
-                yValue1 = reference[0].usd;     
-                yValue4 = reference[3].usd;
-                yValue2 = reference[1].usd;
-                yValue3 = reference[2].usd; 
-                yValue5 = reference[4].usd;
+                yValue1 = referenceArray[0].usd;     
+                yValue4 = referenceArray[3].usd;
+                yValue2 = referenceArray[1].usd;
+                yValue3 = referenceArray[2].usd; 
+                yValue5 = referenceArray[4].usd;
 
                 // pushing the new values
                 dataPoints1.push({
