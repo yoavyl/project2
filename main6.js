@@ -1,7 +1,7 @@
 // modal and toggle with functions i know
 // to seperate into small functions
 // parallax
-// restart progressbar. disable instead of destroy?
+// another progress  bar for more
 // abuot with picture
 // sticky header
 // bootstraping all
@@ -59,6 +59,8 @@ $(function () {
 
     $("#live").click( function () {
         if (topArr.length !==0) {
+
+            // make this into a function that switches colors? more dynamic!
             $("#live").css({"background-color" : "#2196F3", "color": "white"});
             $("#home, #about").css({"background-color" : "white", "color": "#2196F3"});
             $("#containerDiv, #aboutDiv").hide();
@@ -135,7 +137,7 @@ $(function () {
             // $("#progressbar").css({"position" : "absolute", "top" : "90px", "width" : "5px", "left" : "550px"}).show();
             content.style.display = "block";
             // $(`button[id=${more.id}]`).text("Less Info")
-            // $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
+            $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
             const coinString = sessionStorage.getItem(`${more.name}`);  
             if (coinString === null) {
                 console.log(more.name + " is not on session storage");
