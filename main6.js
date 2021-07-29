@@ -90,13 +90,13 @@ $(function () {
 
     $("#searchButton").click(() => {
         const value = $("#searchInput").val();
-        if (bankArray.find(item => item == value) == undefined) {
+        if (bankArray.find(item => item == value) === undefined && value !== "") {
             $(".modal-content").html(`
                 <span class="close">&times;</span>
-                <p>No crypto is named "${value}", please search again with the exact expression.
+                <p>No crypto is named "${value}", please search again with an exact expression.
                 </p>`);
             openModal();
-        } else {
+        } else if (value !== "") {
             clearInterval(intervalId);
             $("#liveDiv, #aboutDiv").hide();
             $("#containerDiv").css({"left": "39%", "margin-top" : "40px"}).show();
@@ -162,6 +162,7 @@ $(function () {
                 }, 120000);
             } else {
                 const coinObj = JSON.parse(coinString); 
+                // make it a function
                 $(`p[id="${coinObj.id}"]`).html(
                     `<img src="${coinObj.img}"/><br/> 
                     Current exchange rate: ${coinObj.usd}$,
@@ -196,7 +197,6 @@ $(function () {
         sessionStorage.setItem(`${coin.name}`, coinToStore);    
         console.log("saved " + coin.name + " to session storage");
         console.log("coin id: " + coin.id);
-        // make this into function
         $(`p[id="${coin.id}"]`).html(
             `<img src="${coin.image.thumb}"/><br/> 
             Current exchange rate: ${coin.market_data.current_price.usd}$,
