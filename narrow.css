@@ -1,0 +1,20 @@
+.data {
+    width:100%;
+}
+
+.krypt {
+    display: none;
+}
+
+#home, #live #about {
+    width: 33%;
+}
+
+#liveDiv {
+    width:100%; 
+}
+
+#search {
+    margin-top: 10;
+    float: left;
+}

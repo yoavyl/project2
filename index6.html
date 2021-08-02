@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptonite</title>
+    <link rel="stylesheet" href="styles6.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+    <link rel="stylesheet" media="screen and (max-width:450px)" href="iphone.css"/>
+    <link rel="stylesheet" media="screen and (max-width:900px)" href="ipad.css"/>
+    <script src="main6.js"></script>
+
+    <script>
+        $( function() {
+          $( "#progressbar" ).progressbar({value: false});
+          $( "#progressbar" ).hide();
+        } );
+        </script>
+    
+
+</head>
+<body>
+    <div class="container" id>
+        <div id="myModal" class="row modal">
+            <div id="modal-content" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>
+        </div>
+    </div>
+
+    <div class="parallax">
+        <header class="align-baseline">Cryptonite</header>
+
+        <img src="kryptonite.jpg" class="krypt"/>
+
+        <div id="progressbar"></div>
+
+        <div class="container" id="bar">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="tags">
+                        <button id="home" class="ui-button ui-widget ui-corner-all">
+                            Home
+                        </button>
+                        <button id="live" class="ui-button ui-widget ui-corner-all">
+                            Live Reports
+                        </button>
+                        <button id="about" class="ui-button ui-widget ui-corner-all">
+                            About
+                        </button>
+                    </div>
+                </div>
+                <div id="search" class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <input id="searchInput" type="text" placeholder="Search"/>
+                        <button id="searchButton" class="ui-button ui-widget ui-corner-all">
+                            Search
+                        </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="homeDiv" class="container">
+            <div id="containerDiv" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 d-flex flex-wrap"></div>
+        </div>
+
+        <div id="liveDiv" class="container">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>
+        </div>
+
+        <div id="aboutDiv" class="container">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <img src="Yoav_Square.jpg" class="yoav"/><br/><br/>
+                <p>Yoav Lifshitz (IL) is an artivist and curator. 
+                In his work, he combines activism, culture jamming, critical engineering, and journalism. 
+                Lifshitz is the co-founder of the Captive Portal platform at the Center for Contemporary Art, 
+                Tel-Aviv, and the Israeli Pirate Party collective. <br/><br/>
+                Showcased at Athens Digital Arts Festival, Finger Lake Environmental Film Festival 
+                (jury prize recipient), National Arts Festival of South Africa, SciArt Magazine, 
+                Jerusalem Art Conference, Art Meets Radical Openness, and more. 
+                Curated exhibitions and art projects at CCA Tel-Aviv, Musrara’s Social Gallery 
+                (Photo-poetics festival), Hayarkon 19 Gallery, Print Screen Festival, and more. <br/><br/>
+                Has taught art courses at Musrara multidisciplinary school of art and society New-Media department
+                and at Hamidrasha faculty of art of Beit-Berl college.<br/><br/>
+                He is a member of <a href="https://wemakemoney.art/">ArtUp Nation</a> (wemakemoney.art), 
+                where is in charge of Management and Business Development.<br/><br/>
+                This is his second project in Fullstack Development course</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
