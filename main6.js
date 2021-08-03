@@ -57,7 +57,7 @@ $(function () {
         clearInterval(intervalId);
         $( "#progressbar" ).progressbar( {disabled: false} );
         buttonsHomeStatus();
-        $("#liveDov").empty();
+        $("#liveDiv").empty();
         // $("#homeDiv").css({"left": "20%", "margin-top" : "5px"}).show();
        $("#homeDiv").show();
         $(".data").show();
@@ -88,7 +88,7 @@ $(function () {
         $("#about").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #live").css({"background-color" : "white", "color": "#2196F3"});
         $("#homeDiv, #liveDiv").hide();
-        $("#liveDov").empty();
+        $("#liveDiv").empty();
         $("#aboutDiv").show();
     });
 
@@ -114,7 +114,7 @@ $(function () {
             // $("#homeDiv").css({"left": "39%", "margin-top" : "40px"}).show();
             $("#homeDiv").show();
             $(".data").hide();
-            $("#liveDov").empty();
+            $("#liveDiv").empty();
             coinsToReportArrayMap = [];
             $(`#${value.toLowerCase()}`).show() // css this to put in the middle?
             $("#searchInput").val("");
@@ -224,15 +224,15 @@ $(function () {
             name: favorite.name,
             id: favorite.id
         }
-        if (favorite.checked === false) {                        // when removing selection on toggle - to reduce the coin form the "database"
+        if (favorite.checked === false) {                        // when removing selection on toggle -> to reduce the coin form the "database"
             for (let i=0; i<coinsToReportArray.length ; i++) {
                 if (coinsToReportArray[i].id===favorite.id) {
-                    coinsToReportArray.splice(i,1);       // deletes this-"top"-object from array
+                    coinsToReportArray.splice(i,1);       // deletes this favorite coin from array
                     console.log("coinsToReportArray after splice: " + coinsToReportArray);
                     $(`#containerDiv input[id=${favorite.id}]`).prop('checked', false).removeAttr('checked');
                 }
             }
-            const tempCoinString = sessionStorage.getItem("temporary");    // it if was on modal and the user wanted to save a sitxh coin -> switching between the coins
+            const tempCoinString = sessionStorage.getItem("temporary");    // if it was on modal and the user wanted to save a sitxh coin -> switching between the coins
             if (tempCoinString !== null) {
                 const coinToAdd =JSON.parse(tempCoinString);
                 $(`#containerDiv input[id=${coinToAdd.id}]`).prop('checked', true).attr('checked', 'checked');
@@ -253,6 +253,7 @@ $(function () {
             favorite.checked = false;
         }
     }
+
     function openModal() {                              // general functions to open the modal
         $("#myModal").css("display","block");
         $(".close, .closeButton").click( () => {
@@ -265,6 +266,7 @@ $(function () {
         $("#modal-content>.data").remove();
         sessionStorage.removeItem("temporary");
     }
+
     function printToModal(name, symbol) {               // printing modal with a list of 5 coins
         $("#modal-content").html(`
         <span class="close">&times;</span>
@@ -358,8 +360,6 @@ $(function () {
         }
       }
 
-    
-      
     // API here:
     // https://canvasjs.com/jquery-charts/dynamic-live-multi-series-chart/
     // MUST SPLICE coinsToReportArrayMAP BACK WHEN WE LEAVE LIVE REPORT
