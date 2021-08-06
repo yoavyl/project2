@@ -9,18 +9,22 @@ $(function () {
 
     // Progress bar shows on ajax starts, and hides whrn ajaxs stops
     $( document ).ajaxStart(function() {
-        $( "#progressbar").show();
-      });
+        if (clickMore === true) {       // does'nt show progress bar when clicking "more info"
+            $("#progressbar").show();
+        }
+    });
 
-      $(document).ajaxStop(function(){
-        $("#progressbar").hide();
-      });
+    $(document).ajaxComplete(function(){
+        $("#progressbar, .loader").hide();
+        clickMore = true;
+    });
 
     // default home button status -> turned into a function since it happens on load AND when clicking home
     function buttonsHomeStatus() {
         $("#aboutDiv, #liveDiv").hide();
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
+        $("*#loading-image").hide();
     }
 
     // "on load"
@@ -55,7 +59,7 @@ $(function () {
     // when clicking "home"
     $("#home").click( function () {
         clearInterval(intervalId);
-        $( "#progressbar" ).progressbar( {disabled: false} );
+        $( "#progressbar" ).progressbar( {disabled: false} );   
         buttonsHomeStatus();
         $("#liveDiv").empty();
         // $("#homeDiv").css({"left": "20%", "margin-top" : "5px"}).show();
@@ -129,8 +133,9 @@ $(function () {
 
     function printData(dataList) {
         for (coin of dataList) {
-            createCoin(coin, "#containerDiv");
-        }                        
+            createCoin(coin, "#cardsDiv");
+        }
+        $("#cardsDiv").append(`<div style="width:33%"></div>`);     // to "cancel" justify-content effect in the last row          
     }
     
     function createCoin(coin, div) {                                                // function that prints the coin cards, both to "home" OR to modal 
@@ -148,15 +153,16 @@ $(function () {
             More Info
         </button>
         <div class="content">
+            <div class="loader ${coin.id}">Loading...</div>
             <p id="${coin.id}"></p>
         </div>
         </div>`);
         coinToPrint.find("input[type=checkbox]").on("click", function() {favoriteCoinsToStore(this)} );
         coinToPrint.find(".collapsible").on("click", function() {showMoreInfo(this)} );
-        
         $(div).append(coinToPrint);
     }
 
+    let clickMore = true;
     function showMoreInfo(more) {
         more.classList.toggle("active");
         const content = more.nextElementSibling; // to rewrite with the functions that i know
@@ -170,7 +176,11 @@ $(function () {
             const coinString = sessionStorage.getItem(`${more.name}`);  
             if (coinString === null) {                                  // if the coin is not on storage -> go to API, print, and save in storage
                 console.log(more.name + " is not on session storage");
+                $(`.${more.id}`).show();
                 getMoreInfo(more.id);
+                setTimeout ( ()=> {
+                    sessionStorage.removeItem(`${more.name}`)
+                }, 120000);                                         // automatically deletes the storage after 2 minutes
             } else {                                                    // if the coin is on storage - retrieve it from storage
                 const coinObj = JSON.parse(coinString); 
                 // make it a function
@@ -187,6 +197,7 @@ $(function () {
     }
     
     async function getMoreInfo(id) {
+        clickMore = false;
         try {
             const coin = await getDataAsync(`https://api.coingecko.com/api/v3/coins/${id}`);
             printMoreInfo(coin);
@@ -204,18 +215,17 @@ $(function () {
             eur: coin.market_data.current_price.eur,
             ils: coin.market_data.current_price.ils,
         };
-        
         $(`p[id="${coin.id}"]`).html(                           // prints more info
             `<img src="${coin.image.thumb}"/>
             Current exchange rate: ${coin.market_data.current_price.usd}$,
             ${coin.market_data.current_price.eur}&euro;,
             ${coin.market_data.current_price.ils}&#8362;`);
         const coinToStore = JSON.stringify(coinMoreInfo); 
-        sessionStorage.setItem(`${coin.name}`, coinToStore);    // save more infor in storage
+        sessionStorage.setItem(`${coin.name}`, coinToStore);    // save more info in storage
         console.log("saved " + coin.name + " to session storage");
-        setTimeout ( ()=> {
-            sessionStorage.removeItem(`${coin.name}`)
-        }, 120000);                                         // automatically deletes the storage after 2 minutes
+        // setTimeout ( ()=> {
+        //     sessionStorage.removeItem(`${coin.name}`)
+        // }, 120000);                                         // automatically deletes the storage after 2 minutes
     }
 
     function favoriteCoinsToStore(favorite) {
@@ -229,13 +239,13 @@ $(function () {
                 if (coinsToReportArray[i].id===favorite.id) {
                     coinsToReportArray.splice(i,1);       // deletes this favorite coin from array
                     console.log("coinsToReportArray after splice: " + coinsToReportArray);
-                    $(`#containerDiv input[id=${favorite.id}]`).prop('checked', false).removeAttr('checked');
+                    $(`#cardsDiv input[id=${favorite.id}]`).prop('checked', false).removeAttr('checked');
                 }
             }
             const tempCoinString = sessionStorage.getItem("temporary");    // if it was on modal and the user wanted to save a sitxh coin -> switching between the coins
             if (tempCoinString !== null) {
                 const coinToAdd =JSON.parse(tempCoinString);
-                $(`#containerDiv input[id=${coinToAdd.id}]`).prop('checked', true).attr('checked', 'checked');
+                $(`#cardsDiv input[id=${coinToAdd.id}]`).prop('checked', true).attr('checked', 'checked');
                 sessionStorage.removeItem("temporary");
                 coinsToReportArray.push(coinToAdd);
             }
@@ -243,7 +253,7 @@ $(function () {
         } else if (coinsToReportArray.length<5) {         // when selecting coin # 1 to 5 -> saving it in "database"
             coinsToReportArray.push(coinToPushOrHold);
             console.log("coinsToReportArray: " + coinsToReportArray);
-            $(`#containerDiv input[id=${favorite.id}]`).prop('checked', true).attr('checked', 'checked');
+            $(`#cardsDiv input[id=${favorite.id}]`).prop('checked', true).attr('checked', 'checked');
         } else {                                          // when selecting 6th coin -> open modal with favorite coins list and allowing removal and switching
             const coinOnHold = JSON.stringify(coinToPushOrHold); 
             sessionStorage.setItem("temporary", coinOnHold); 
@@ -388,7 +398,7 @@ $(function () {
         var options = {
             width: widthGraph,
             title: {
-                text: "Your selected cryptocurrencies rate in USD"
+                text: "REAL TIME CTYPROCURRENY LIVE REPORT"
             },
             axisX: {
                 title: "chart updates every 2 secs"
