@@ -1,10 +1,3 @@
-// modal and toggle with functions i know
-// to seperate into small functions
-// another progress  bar for more
-// sticky header
-// clean console.logs
-
-
 $(function () {
 
     // Progress bar shows on ajax starts, and hides whrn ajaxs stops
@@ -15,7 +8,7 @@ $(function () {
     });
 
     $(document).ajaxComplete(function(){
-        $("#progressbar, .loader").hide();
+        $("#progressbar").hide();
         clickMore = true;
     });
 
@@ -24,7 +17,7 @@ $(function () {
         $("#aboutDiv, #liveDiv").hide();
         $("#home").css({"background-color" : "#2196F3", "color": "white"});
         $("#about, #live").css({"background-color" : "white", "color": "#2196F3"});
-        $("*#loading-image").hide();
+        $("#searchButton").css({"background-color" : "white", "color" : "green"});
     }
 
     // "on load"
@@ -33,8 +26,7 @@ $(function () {
     // "on load" -> going to API to load cards
     $(async function () {
         try {
-            const dataList = await getDataAsync("https://api.coingecko.com/api/v3/coins/");
-            // instead of /list, which has a lot of dead weight
+            const dataList = await getDataAsync("https://api.coingecko.com/api/v3/coins/");      // instead of /list, which has a lot of dead weight
             printData(dataList);
         }
         catch (err) {
@@ -59,29 +51,27 @@ $(function () {
     // when clicking "home"
     $("#home").click( function () {
         clearInterval(intervalId);
-        $( "#progressbar" ).progressbar( {disabled: false} );   
-        buttonsHomeStatus();
+        clearInterval(update);
+        buttonsHomeStatus();        
         $("#liveDiv").empty();
-        // $("#homeDiv").css({"left": "20%", "margin-top" : "5px"}).show();
-       $("#homeDiv").show();
+        $("#homeDiv").show();
         $(".data").show();
     });
     
     // when clicking "live reports"
     $("#live").click( function () {
         if (coinsToReportArray.length !==0) {    // if there is any coin to report
-            // make this into a function that switches colors? more dynamic!
             $("#live").css({"background-color" : "#2196F3", "color": "white"});
             $("#home, #about").css({"background-color" : "white", "color": "#2196F3"});
+            $("#searchButton").css({"background-color" : "white", "color" : "green"});
             $("#homeDiv, #aboutDiv").hide();
             $("#liveDiv").empty().show();
             getFavoritesToReport();
         } else {                                // if there aren't any coins to report
             $("#modal-content").html(`
-                <span class="close">&times;</span>
                 <p>We are very sorry, but there are no favorite coins to report. Please hit Home button
                 and select 1-5 coins.
-                </p>`);
+                </p><span class="close">&times;</span>`);
             openModal();
         }
     });
@@ -89,8 +79,10 @@ $(function () {
     // when clicking "about"
     $("#about").click( function () {
         clearInterval(intervalId);
+        clearInterval(update);
         $("#about").css({"background-color" : "#2196F3", "color": "white"});
         $("#home, #live").css({"background-color" : "white", "color": "#2196F3"});
+        $("#searchButton").css({"background-color" : "white", "color" : "green"});
         $("#homeDiv, #liveDiv").hide();
         $("#liveDiv").empty();
         $("#aboutDiv").show();
@@ -108,19 +100,19 @@ $(function () {
         const value = $("#searchInput").val();
         if ( $(`#${value.toLowerCase()}`)[0] === undefined && value !== "") {           // modal opens when there is no match for search results
             $("#modal-content").html(`
-                <span class="close">&times;</span>
                 <p>No crypto is named "${value}", please search again with an exact expression.
-                </p>`);
+                </p><span class="close">&times;</span>`);
             openModal();
         } else if (value !== "") {                                                     // showing the result when there is a match (whether the search was lower / upper case)
             clearInterval(intervalId);
+            clearInterval(update);
             $("#liveDiv, #aboutDiv").hide();
-            // $("#homeDiv").css({"left": "39%", "margin-top" : "40px"}).show();
             $("#homeDiv").show();
             $(".data").hide();
             $("#liveDiv").empty();
-            coinsToReportArrayMap = [];
-            $(`#${value.toLowerCase()}`).show() // css this to put in the middle?
+            $("#searchButton").css({"background-color" : "green", "color" : "white"});
+            $("#home, #live, #about").css({"background-color" : "white", "color" : "#2196F3"});
+            $(`#${value.toLowerCase()}`).show() 
             $("#searchInput").val("");
         } else {                                                                       // modal opens when there is no input
             $("#modal-content").html(`
@@ -165,12 +157,11 @@ $(function () {
     let clickMore = true;
     function showMoreInfo(more) {
         more.classList.toggle("active");
-        const content = more.nextElementSibling; // to rewrite with the functions that i know
+        const content = more.nextElementSibling; 
         if (content.style.display === "block") {                        // closes the collapsible
             content.style.display = "none";
             $(`button[id=${more.id}]`).text("More Info").css("position", "relative");
         } else {                                                        // opens teh collapsible
-            // $("#progressbar").css({"position" : "absolute", "top" : "90px", "width" : "5px", "left" : "550px"}).show();
             content.style.display = "block";
             $(`button[id=${more.id}]`).text("Less Info").css("position", "static");
             const coinString = sessionStorage.getItem(`${more.name}`);  
@@ -183,7 +174,6 @@ $(function () {
                 }, 120000);                                         // automatically deletes the storage after 2 minutes
             } else {                                                    // if the coin is on storage - retrieve it from storage
                 const coinObj = JSON.parse(coinString); 
-                // make it a function
                 $(`p[id="${coinObj.id}"]`).html(
                     `<img src="${coinObj.img}"/>
                     Current exchange rate: ${coinObj.usd}$,
@@ -215,17 +205,16 @@ $(function () {
             eur: coin.market_data.current_price.eur,
             ils: coin.market_data.current_price.ils,
         };
+        $(`.${coin.id}`).hide();
         $(`p[id="${coin.id}"]`).html(                           // prints more info
             `<img src="${coin.image.thumb}"/>
-            Current exchange rate: ${coin.market_data.current_price.usd}$,
+            Current exchange rate: <br/> 
+            ${coin.market_data.current_price.usd}$,
             ${coin.market_data.current_price.eur}&euro;,
             ${coin.market_data.current_price.ils}&#8362;`);
         const coinToStore = JSON.stringify(coinMoreInfo); 
         sessionStorage.setItem(`${coin.name}`, coinToStore);    // save more info in storage
         console.log("saved " + coin.name + " to session storage");
-        // setTimeout ( ()=> {
-        //     sessionStorage.removeItem(`${coin.name}`)
-        // }, 120000);                                         // automatically deletes the storage after 2 minutes
     }
 
     function favoriteCoinsToStore(favorite) {
@@ -257,7 +246,6 @@ $(function () {
         } else {                                          // when selecting 6th coin -> open modal with favorite coins list and allowing removal and switching
             const coinOnHold = JSON.stringify(coinToPushOrHold); 
             sessionStorage.setItem("temporary", coinOnHold); 
-            // need to find a way not to use memory
             printToModal(favorite.name, favorite.value);
             openModal();
             favorite.checked = false;
@@ -279,15 +267,15 @@ $(function () {
 
     function printToModal(name, symbol) {               // printing modal with a list of 5 coins
         $("#modal-content").html(`
-        <span class="close">&times;</span>
-        <p>We are very sorry, but there is an arbitrary limit of 5 coins to save as favorites.
+        <span class="close" style="text-align:right;width:100%;">&times;</span><br/>
+        <p style="width:100%">We are very sorry, but there is an arbitrary limit of 5 coins to save as favorites.
             <br/>
-            In order to add ${name} (${symbol}) to your favorites you have to remove one of the following: 
-        </p><br/>`);
+            In order to add ${name} (${symbol.toUpperCase()}) to your favorites you have to remove one of the following: 
+        </p>`);
         for (coin of coinsToReportArray) {
             createCoin(coin, "#modal-content");
         }
-        $("#modal-content").append(`<footer><button class="ui-button ui-widget ui-corner-all closeButton">
+        $("#modal-content").append(`<div style="width:33%"></div><footer><button class="ui-button ui-widget ui-corner-all closeButton">
                 Cancel
             </button></footer>`);
         $('#modal-content :checkbox').prop('checked', true).attr('checked', 'checked');
@@ -305,6 +293,7 @@ $(function () {
 
     let str ="";
     var intervalId;
+    var update;
 
     function getFavoritesToReport() {               // creates string to get the API of the favorite coins
         $("#liveDiv").empty();
@@ -355,12 +344,9 @@ $(function () {
     let widthGraph;
 
     var iPhone = window.matchMedia("(max-width: 450px)");
-    // iPhoneFunction(iPhone) // Call listener function at run time
-    // iPhone.addListener(iPhoneFunction) // Attach listener function on state changes
-
     var iPad = window.matchMedia("(max-width: 800px)")
     
-    function iPhoneFunction(iPhone) {
+    function iPhoneFunction() {
         if (iPhone.matches) { // If media query matches
           widthGraph = 300;
         } else if (iPad.matches) {
@@ -372,7 +358,6 @@ $(function () {
 
     // API here:
     // https://canvasjs.com/jquery-charts/dynamic-live-multi-series-chart/
-    // MUST SPLICE coinsToReportArrayMAP BACK WHEN WE LEAVE LIVE REPORT
 
     function drawChart() {
         visibilityGraph = [];
@@ -404,11 +389,10 @@ $(function () {
                 title: "chart updates every 2 secs"
             },
             axisY: {
-                suffix: "USD"
+                title: "USD",
             },
             toolTip: {
                 shared: false // affects the index at the bottom
-                // format with content formatter https://canvasjs.com/docs/charts/chart-options/tooltip/content-formatter/
             },
             legend: {
                 cursor: "pointer",
@@ -538,6 +522,6 @@ $(function () {
         }
         // generates first set of dataPoints 
         updateChart(100);
-        setInterval(function () { updateChart() }, updateInterval);     
+        update = setInterval(function () { updateChart() }, updateInterval);     
         }
     });
