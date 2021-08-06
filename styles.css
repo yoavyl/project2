@@ -1,45 +1,67 @@
-.data {
-    width: 400px;
-    /* height: 185px; */
-    border: 1px solid black;
-    margin: 0px;
-    display: inline-block;
-    text-align: center;
-    padding-top: 10px;
-}
-
-#liveDiv > div {
-  width: 400px;
-  border: 1px solid black;
-  margin: 0px;
-  display: inline-block;
-  text-align: center;
-  padding-top: 10px;
-}
-
-#containerDiv, #liveDiv {
-    display: flex;
-    left: 50%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin: auto;
-}
-
 body {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  padding: 3%;
+  height: 25%;
+  font-size: 30px;
+  color:white;
+  box-sizing: border-box;
+}
+
+.parallax {
+  /* The image used */
+  background-image: url("snl.png");
+  background-color: lightgray;
+  box-sizing: border-box;
+  min-height: 1000px;
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.krypt {
+  height: 110px;
+  width: 110px;
+  position: absolute;
+  top: 10px;
+  right: 0;
+  border-bottom: 1px solid black;
+}
+
+#progressbar {
+  position: absolute;
+  top: 300px;
+  width: 60%; 
+  min-width: 400px;
+  left: 20%;
+}
+
+#bar {
+  position:relative;
+}
+
+/* .bar {
+  margin-top: 10px;
+} */
+#home {
+  color: white;
+  background-color: #2196F3;
+  border-width: 0px;
 }
 
 #live, #about {
   color: #2196F3;
   background-color: white;
   border-width: 0px;
-  /* font-family: courier, serif; */
 }
 
-#home {
-  color: white;
-  background-color: #2196F3;
-  border-width: 0px;
+#search {
+  text-align: right;
 }
 
 #searchButton {
@@ -48,17 +70,61 @@ body {
   border-color: green;
 }
 
+#searchInput {
+  position: relative;
+  vertical-align: middle
+}
 
+#cardsDiv {
+  margin-top: 10px;
+  justify-content: space-between;
+}
 
-/* .ui-button {
-    background-color: blue;
-    color: white;
-} */
+.data {  
+  box-sizing: border-box; 
+  width: 33%;
+  border: 0.5px solid gray;
+  margin: 1px;
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: white;
+}
 
-/* img {
-    height: 50px;
-    width: 50px;
-} */
+.symbolToggle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cardSymbol {
+  font-size: x-large;
+  font-weight: bold;
+  line-height: 25px;
+}
+
+#liveDiv {
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+#aboutDiv {
+  display: none;
+  margin-top: 10px;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+#aboutDiv > img, p {
+  margin-left: 10px;
+}
+
+.yoav {
+  height: 100px;
+  width: 100px;
+  position:relative;
+  margin-top: 10px;
+}
 
 /* The switch - the box around the slider */
 .switch {
@@ -123,11 +189,12 @@ body {
     border-radius: 50%;
   }
 
-
   /* Style the button that is used to open and close the collapsible content */
-#collapsible {
+.collapsible {
   cursor: pointer;
   outline: none;
+  position: relative;
+  margin-bottom: 5px;
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
@@ -137,49 +204,107 @@ body {
 
 /* Style the collapsible content. Note: hidden by default */
 .content {
-  padding: 0 18px;
+  /* padding: 0 18px; */
   display: none;
   overflow: hidden;
-  /* background-color: #f1f1f1; */
 }
 
-#modal {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(1.1);
-  transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  z-index: 1; /* Sit on top */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
-.modal-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 1rem 1.5rem;
-  width: 24rem;
-  border-radius: 0.5rem;
+
+/* Modal Content/Box */
+#modal-content {
+  background-color: #fefefe;
+  margin: 3% auto; /* 15% from the top and centered */
+  padding: 10px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  justify-content: space-between;
 }
-.close-button {
+
+/* The Close Button */
+.close {
+  color: #aaa;
   float: right;
-  width: 1.5rem;
-  line-height: 1.5rem;
-  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
   cursor: pointer;
-  border-radius: 0.25rem;
-  background-color: lightgray;
 }
-.close-button:hover {
-  background-color: darkgray;
+
+footer {
+  width: 100%;
+  text-align: center;
 }
-.show-modal {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1.0);
-  transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+
+.loader,
+.loader:before,
+.loader:after {
+  background: #ffffff;
+  -webkit-animation: load1 1s infinite ease-in-out;
+  animation: load1 1s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+}
+.loader {
+  /* color: #ffffff; */
+  color: #2196F3;
+  text-indent: -9999em;
+  margin: 88px auto;
+  position: relative;
+  font-size: 8px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  top: 0;
+  content: '';
+}
+.loader:before {
+  left: -1.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 1.5em;
+}
+@-webkit-keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 1em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 2em;
+  }
+}
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 1em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 2em;
+  }
 }
